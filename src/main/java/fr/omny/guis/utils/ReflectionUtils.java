@@ -17,7 +17,8 @@ public class ReflectionUtils {
   }
 
   /**
-   * Helper function to edit field, and eliminate boiler plate of set accessible 
+   * Helper function to edit field, and eliminate boiler plate of set accessible
+   * 
    * @param field
    * @param task
    * @throws Exception
@@ -41,8 +42,6 @@ public class ReflectionUtils {
     Objects.requireNonNull(field);
     Objects.requireNonNull(fieldValue);
 
-    access(field, () -> {
-        field.set(field, fieldValue);
-    });
+    access(field, () -> field.set(field, fieldValue));
   }
 }
