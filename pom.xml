@@ -29,11 +29,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.github.stefvanschie.inventoryframework</groupId>
-      <artifactId>IF</artifactId>
-      <version>0.10.7</version>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
