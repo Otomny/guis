@@ -1,5 +1,7 @@
 package fr.omny.guis.attributes;
 
+import java.lang.reflect.Field;
+
 /**
  * Behaviour of something that need to listen to field and global updates
  *
@@ -11,7 +13,7 @@ public interface Updateable {
   /**
    * Method called when a single field was edited by the player
    */
-  default void fieldUpdate() {}
+  default void fieldUpdate(Field field) {}
 
   /**
    * Method called when the inventory has been closed
