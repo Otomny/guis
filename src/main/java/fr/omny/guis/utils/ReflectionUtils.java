@@ -3,6 +3,7 @@ package fr.omny.guis.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,7 +33,8 @@ public class ReflectionUtils {
 				field.setAccessible(false);
 			}
 			return Optional.of(value);
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException
+				| IllegalAccessException e) {
 			return Optional.empty();
 		}
 	}
@@ -47,6 +49,16 @@ public class ReflectionUtils {
 		} catch (NoSuchFieldException | SecurityException e) {
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * Get the tpye of the list hold by the field
+	 * 
+	 * @param field The field
+	 * @return The type of the list
+	 */
+	public static Class<?> getTypeOfListField(Field field) {
+		return (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 	}
 
 	/**
