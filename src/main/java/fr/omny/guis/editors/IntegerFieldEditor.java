@@ -1,5 +1,6 @@
 package fr.omny.guis.editors;
 
+
 import java.lang.reflect.Field;
 
 import org.bukkit.entity.Player;
@@ -7,17 +8,19 @@ import org.bukkit.entity.Player;
 import fr.omny.guis.OField;
 import fr.omny.guis.OFieldEditor;
 
-public class IntegerFieldEditor implements OFieldEditor<Integer>{
+@OMainEditor
+public class IntegerFieldEditor implements OFieldEditor {
 
-  @Override
-  public Class<? super Integer> type() {
-    return Integer.class;
-  }
+	@Override
+	public boolean accept(Field field) {
+		Class<?> klass = field.getType();
+		return klass == int.class || klass == Integer.class;
+	}
 
-  @Override
-  public void edit(Player player, Integer edit, Field field, OField fieldData) {
-    
-    
-  }
-  
+	@Override
+	public void edit(Player player, Object toEdit, Field field, OField fieldData, Runnable onClose) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
