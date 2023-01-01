@@ -20,6 +20,14 @@ public class GuiItem {
 	 * @return
 	 */
 	public static GuiItem back(Runnable click) {
+		return back(Optional.of(click));
+	}
+
+	/**
+	 * @param click
+	 * @return
+	 */
+	public static GuiItem back(Optional<Runnable> click) {
 		return back("&7Back", click);
 	}
 
@@ -28,7 +36,7 @@ public class GuiItem {
 	 * @param click
 	 * @return
 	 */
-	public static GuiItem back(String text, Runnable click) {
+	public static GuiItem back(String text, Optional<Runnable> click) {
 		return new GuiItemBuilder().name(Utils.replaceColor(text)).icon(Material.ARROW).click(click)
 				.build();
 	}

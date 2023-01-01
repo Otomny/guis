@@ -3,6 +3,7 @@ package fr.omny.guis.backend;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,6 +64,14 @@ public class GuiItemBuilder implements Cloneable {
 
 	public GuiItemBuilder description(List<String> description) {
 		this.description.addAll(description);
+		return this;
+	}
+
+	public GuiItemBuilder click(Optional<Runnable> handler) {
+		this.handler = (player, slot, click) -> {
+			handler.ifPresent(Runnable::run);
+			return true;
+		};
 		return this;
 	}
 

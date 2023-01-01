@@ -89,4 +89,24 @@ public class ReflectionUtils {
 
 		access(field, () -> field.set(field, fieldValue));
 	}
+
+	public static String string(Object object) {
+		if (object == null)
+			return "null";
+
+		Class<?> klass = object.getClass();
+		var str = new StringBuilder("{");
+		for (var field : klass.getDeclaredFields()) {
+			try {
+				access(field, () -> str.append(field.getName() + ": " + field.get(object) + ", "));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (str.length() > 1)
+			str.replace(str.length() - 2, str.length(), "");
+
+		str.append("}");
+		return str.toString();
+	}
 }
