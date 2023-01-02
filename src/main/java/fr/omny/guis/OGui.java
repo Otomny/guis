@@ -22,12 +22,14 @@ import fr.omny.guis.editors.ListOClassFieldEditor;
 import fr.omny.guis.editors.OMainEditor;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
+import lombok.Getter;
 
 /**
  *
  */
 public class OGui {
 
+	@Getter
 	private static Plugin plugin;
 
 	private static final List<OFieldEditor> EDITORS = new ArrayList<>();
