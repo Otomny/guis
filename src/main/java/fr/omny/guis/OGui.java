@@ -17,9 +17,11 @@ import fr.omny.guis.backend.GuiBuilder;
 import fr.omny.guis.backend.GuiItem;
 import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListener;
+import fr.omny.guis.editors.DoubleFieldEditor;
 import fr.omny.guis.editors.IntegerFieldEditor;
 import fr.omny.guis.editors.ListOClassFieldEditor;
 import fr.omny.guis.editors.OMainEditor;
+import fr.omny.guis.editors.StringFieldEditor;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
 import lombok.Getter;
@@ -64,7 +66,8 @@ public class OGui {
 		Bukkit.getPluginManager().registerEvents(new GuiListener(), plugin);
 
 		plugin.getLogger().info("OGui loaded successfuly !");
-		register(new IntegerFieldEditor(), new ListOClassFieldEditor());
+		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(),
+				new ListOClassFieldEditor());
 	}
 
 	/**
@@ -121,6 +124,7 @@ public class OGui {
 			var field = entry.getKey();
 			var data = entry.getValue();
 			var editors = findForType(field);
+			Object value = ReflectionUtils.get(this.toEdit, field);
 			String fieldName = Utils.replaceColor(Utils.orString(data.value(), "&e" + field.getName()));
 			if (editors.isEmpty()) {
 				plugin.getLogger().warning("No editors found for type " + field.getType() + " on field "
@@ -134,6 +138,7 @@ public class OGui {
 							.findFirst().orElse(editors.get(0));
 
 			guiBuilder.item(new GuiItemBuilder().name(fieldName).icon(data.display())
+					.description("§7§oValue: §e" + (value == null ? "null" : value.toString())).breakLine()
 					.description(data.description())
 					.click(() -> editor.edit(player, this.toEdit, field, data, () -> open(player))).build());
 		}
