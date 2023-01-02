@@ -14,6 +14,7 @@ import fr.omny.guis.OField;
 import fr.omny.guis.OFieldEditor;
 import fr.omny.guis.OGui;
 import fr.omny.guis.attributes.ListOperation;
+import fr.omny.guis.attributes.Updateable;
 import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListBuilder;
 import fr.omny.guis.utils.ReflectionUtils;
@@ -61,6 +62,9 @@ public class ListOClassFieldEditor implements OFieldEditor {
 
 											OGui.open(player, createdElement, () -> {
 												list.add(createdElement);
+												if (toEdit instanceof Updateable updateable) {
+													updateable.fieldUpdate(field);
+												}
 												edit(page, player, toEdit, field, fieldData, onClose);
 											});
 										} catch (InstantiationException | IllegalAccessException
