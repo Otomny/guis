@@ -39,6 +39,33 @@ public class ReflectionUtils {
 		}
 	}
 
+	
+	/**
+	 * 
+	 * @param owner
+	 * @param field
+	 * @return
+	 */
+	public static Object get(Object owner, Field field){
+		Objects.requireNonNull(owner);
+		Objects.requireNonNull(field);
+
+		var hidden = isHidden(field);
+		if (hidden) {
+			field.setAccessible(true);
+		}
+		try {
+			Object fieldValue = field.get(owner);
+			return fieldValue;
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		if (hidden) {
+			field.setAccessible(false);
+		}
+		return null;
+	}
+
 	/**
 	 * @return
 	 */
@@ -89,6 +116,7 @@ public class ReflectionUtils {
 
 		access(field, () -> field.set(field, fieldValue));
 	}
+
 
 	public static String string(Object object) {
 		if (object == null)
