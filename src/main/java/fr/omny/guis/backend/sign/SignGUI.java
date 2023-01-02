@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -49,17 +50,29 @@ public class SignGUI {
 				Player ePlayer = event.getPlayer();
 				if (ePlayer != player)
 					return;
+				var l = player.getLocation();
+				var signBlockPosition = new BlockPosition(l.getBlockX(), 0, l.getBlockZ());
+
 				PacketContainer packet = event.getPacket();
-				// var blockPos = packet.getBlockPositionModifier().getValues().get(0);
+				var blockPos = packet.getBlockPositionModifier().getValues().get(0);
 				var data = packet.getStringArrays().getValues().get(0);
+
+				if (signBlockPosition.getX() != blockPos.getX()
+						|| signBlockPosition.getY() != blockPos.getY()
+						|| signBlockPosition.getZ() != blockPos.getZ()) {
+					return;
+				}
+
 				String string = data[0];
 				if (SignGUI.this.validate.test(string)) {
-					SignGUI.this.onClose.ifPresent(c -> c.accept(string));
+					SignGUI.this.onClose.ifPresent(
+							c -> Bukkit.getScheduler().runTask(OGui.getPlugin(), () -> c.accept(string)));
 					manager.removePacketListener(this);
 				} else {
 					SignGUI.this.sendSignData(player, new String[] {
 							"", SignGUI.this.title, "§cError", "" });
 				}
+				event.setCancelled(true);
 			}
 		});
 	}
