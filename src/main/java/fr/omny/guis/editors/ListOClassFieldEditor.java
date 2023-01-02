@@ -49,7 +49,12 @@ public class ListOClassFieldEditor implements OFieldEditor {
 						Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())), list)
 								.page(page)
 								.itemCreation(obj -> new GuiItemBuilder().name(klass.getSimpleName()).breakLine()
-										.description(ReflectionUtils.string(obj)))
+										.description("§7§oValue: §e" + ReflectionUtils.string(obj))
+										.click((p, slot, click) -> {
+											OGui.open(player, obj,
+													() -> edit(page, player, toEdit, field, fieldData, onClose));
+											return true;
+										}))
 								.pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose))
 								.close(onClose);
 
