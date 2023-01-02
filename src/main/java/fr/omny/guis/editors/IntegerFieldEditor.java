@@ -34,6 +34,7 @@ public class IntegerFieldEditor implements OFieldEditor {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			onClose.run();
 		}).title("Set " + field.getName()).open(player);
 	}
 
