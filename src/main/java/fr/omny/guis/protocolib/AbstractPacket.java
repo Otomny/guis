@@ -5,12 +5,22 @@ import org.bukkit.entity.Player;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.google.common.base.Objects;
 
 public abstract class AbstractPacket {
 	// The packet we will be modifying
 	protected PacketContainer handle;
+
+	/**
+	 * 
+	 * @param type
+	 */
+	protected AbstractPacket(PacketType type) {
+		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+		handle = manager.createPacket(type);
+	}
 
 	/**
 	 * Constructs a new strongly typed wrapper for the given packet.

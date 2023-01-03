@@ -1,13 +1,10 @@
 package fr.omny.guis.protocolib;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.nbt.NbtBase;
-import com.comphenix.protocol.wrappers.nbt.NbtFactory;
+import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 
 public class WrapperPlayServerSignLinesUpdate extends WrapperPlayServerTileEntityData {
 
@@ -23,15 +20,30 @@ public class WrapperPlayServerSignLinesUpdate extends WrapperPlayServerTileEntit
 	}
 
 	public void setLines(String[] strLines) {
-		List<NbtBase<?>> tags = new ArrayList<>();
-		for (int i = 0; i < RAW_TEXT_FIELD_NAMES.length; i++) {
-			var tag = WrappedChatComponent.fromText(strLines[i]).getJson();
-			tags.add(NbtFactory.of(RAW_TEXT_FIELD_NAMES[i], tag));
-		}
+		try {
+			try {
 
-		tags.add(NbtFactory.of("Color", "black"));
-		tags.add(NbtFactory.of("GlowingText", (byte) 1));
-		setNbtData(NbtFactory.ofCompound("tag", tags));
+				WrappedChatComponent[] components = new WrappedChatComponent[4];
+				for (int i = 0; i < 4; i++) {
+					components[i] = WrappedChatComponent.fromText(strLines[i]);
+				}
+				handle.getChatComponentArrays().write(0, components);
+
+			} catch (FieldAccessException fae) {
+				fae.printStackTrace();
+
+				NbtCompound compound = (NbtCompound) this.getNbtData();
+
+				for (int i = 0; i < RAW_TEXT_FIELD_NAMES.length; i++) {
+					compound.put(RAW_TEXT_FIELD_NAMES[i], strLines[i]);
+				}
+
+				this.setNbtData(compound);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
