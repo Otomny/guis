@@ -20,7 +20,7 @@ import fr.omny.guis.utils.Utils.Tuple2;
 
 public class GuiListBuilder<T> {
 
-	public static boolean isLastPage(GuiListState state){
+	public static boolean isLastPage(GuiListState state) {
 		return state.page() == state.maxPage();
 	}
 
@@ -86,7 +86,7 @@ public class GuiListBuilder<T> {
 					.description(toString);
 		});
 
-		int maxPageCount = list.size() / rowsPerPage;
+		int maxPageCount = (int) Math.floor(Double.valueOf(list.size()) / Double.valueOf(itemPageCount));
 		if (page < 0) {
 			this.pageChange.ifPresent(c -> c.accept(0));
 		} else if (page > maxPageCount) {
