@@ -48,7 +48,8 @@ public class ListOClassFieldEditor implements OFieldEditor {
 				var guiBuilder = new GuiListBuilder<>(
 						Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())), list)
 								.page(page)
-								.itemCreation(obj -> new GuiItemBuilder().name(klass.getSimpleName()).breakLine()
+								.itemCreation(obj -> new GuiItemBuilder().name("§e" + klass.getSimpleName())
+										.icon(fieldData.display()).breakLine()
 										.description("§7§oValue: §e" + ReflectionUtils.string(obj))
 										.click((p, slot, click) -> {
 											OGui.open(player, obj,
