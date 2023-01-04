@@ -164,7 +164,7 @@ public class OGui {
 
 		// Look for all fields (public, private, protected and even package)
 		for (Field field : klass.getDeclaredFields()) {
-			// In case the field is kinda private, make is accessible
+			// In case the field is private, make is accessible
 			try {
 				ReflectionUtils.access(field, () -> {
 					if (field.isAnnotationPresent(OField.class)) {
