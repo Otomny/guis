@@ -65,8 +65,16 @@ public class SignGUI {
 
 				String string = data[0];
 				if (SignGUI.this.validate.test(string)) {
-					SignGUI.this.onClose.ifPresent(
-							c -> Bukkit.getScheduler().runTask(OGui.getPlugin(), () -> c.accept(string)));
+					SignGUI.this.onClose.ifPresent(c -> {
+						var blockTypeAt = blockPos.toVector().toLocation(player.getWorld()).getBlock()
+								.getType();
+						// create block
+						var createBlockPacket = new WrapperPlayServerBlockChange();
+						createBlockPacket.setLocation(signBlockPosition);
+						createBlockPacket.setBlockData(WrappedBlockData.createData(blockTypeAt));
+						createBlockPacket.sendPacket(player);
+						Bukkit.getScheduler().runTask(OGui.getPlugin(), () -> c.accept(string));
+					});
 					manager.removePacketListener(this);
 				} else {
 					SignGUI.this.sendSignData(player, new String[] {
