@@ -18,6 +18,7 @@ import fr.omny.guis.backend.GuiItem;
 import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListener;
 import fr.omny.guis.editors.DoubleFieldEditor;
+import fr.omny.guis.editors.EnumFieldEditor;
 import fr.omny.guis.editors.IntegerFieldEditor;
 import fr.omny.guis.editors.ListOClassFieldEditor;
 import fr.omny.guis.editors.OMainEditor;
@@ -67,7 +68,7 @@ public class OGui {
 
 		plugin.getLogger().info("OGui loaded successfuly !");
 		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(),
-				new ListOClassFieldEditor());
+				new ListOClassFieldEditor(), new EnumFieldEditor());
 	}
 
 	/**
@@ -138,7 +139,7 @@ public class OGui {
 							.findFirst().orElse(editors.get(0));
 
 			guiBuilder.item(new GuiItemBuilder().name(fieldName).icon(data.display())
-					.description("§7§oValue: §e" + (value == null ? "null" : value.toString())).breakLine()
+					.description("§7§oValue: §e" + ReflectionUtils.string(value)).breakLine()
 					.description(data.description())
 					.click(() -> editor.edit(player, this.toEdit, field, data, () -> open(player))).build());
 		}
