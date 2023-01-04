@@ -39,14 +39,12 @@ public class ReflectionUtils {
 		}
 	}
 
-	
 	/**
-	 * 
 	 * @param owner
 	 * @param field
 	 * @return
 	 */
-	public static Object get(Object owner, Field field){
+	public static Object get(Object owner, Field field) {
 		Objects.requireNonNull(owner);
 		Objects.requireNonNull(field);
 
@@ -114,9 +112,8 @@ public class ReflectionUtils {
 		Objects.requireNonNull(field);
 		Objects.requireNonNull(fieldValue);
 
-		access(field, () -> field.set(field, fieldValue));
+		access(field, () -> field.set(owner, fieldValue));
 	}
-
 
 	public static String string(Object object) {
 		if (object == null)
