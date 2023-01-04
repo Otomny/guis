@@ -20,7 +20,7 @@ import fr.omny.guis.backend.GuiListBuilder;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
 
-public class ListOClassFieldEditor implements OFieldEditor {
+public class ListFieldEditor implements OFieldEditor {
 
 	@Override
 	public boolean accept(Field field) {

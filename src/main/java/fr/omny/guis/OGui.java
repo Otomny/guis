@@ -20,7 +20,7 @@ import fr.omny.guis.backend.GuiListener;
 import fr.omny.guis.editors.DoubleFieldEditor;
 import fr.omny.guis.editors.EnumFieldEditor;
 import fr.omny.guis.editors.IntegerFieldEditor;
-import fr.omny.guis.editors.ListOClassFieldEditor;
+import fr.omny.guis.editors.ListFieldEditor;
 import fr.omny.guis.editors.OMainEditor;
 import fr.omny.guis.editors.StringFieldEditor;
 import fr.omny.guis.utils.ReflectionUtils;
@@ -68,7 +68,7 @@ public class OGui {
 
 		plugin.getLogger().info("OGui loaded successfuly !");
 		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(),
-				new ListOClassFieldEditor(), new EnumFieldEditor());
+				new ListFieldEditor(), new EnumFieldEditor());
 	}
 
 	/**
