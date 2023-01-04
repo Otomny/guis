@@ -4,6 +4,7 @@ package fr.omny.guis.editors;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +27,7 @@ public class StringFieldEditor implements OFieldEditor {
 	@Override
 	public void edit(Player player, Object toEdit, Field field, OField fieldData, Runnable onClose) {
 		new AnvilGUI.Builder().onClose(p -> {
+			Bukkit.getScheduler().runTask(OGui.getPlugin(), onClose);
 		}).onComplete((completion) -> {
 			try {
 				ReflectionUtils.access(field, () -> {
@@ -34,7 +36,6 @@ public class StringFieldEditor implements OFieldEditor {
 						updateable.fieldUpdate(field);
 					}
 				});
-				onClose.run();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
