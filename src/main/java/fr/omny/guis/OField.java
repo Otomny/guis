@@ -16,7 +16,7 @@ import fr.omny.guis.utils.Utils;
 public @interface OField {
 	String value() default Utils.STRING_DEFAULT_VALUE;
 
-	Material display() default Material.NAME_TAG;
+	Material display() default Material.BOOK;
 
 	String[] description() default {};
 
