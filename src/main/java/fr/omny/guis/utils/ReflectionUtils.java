@@ -4,6 +4,8 @@ package fr.omny.guis.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -115,13 +117,42 @@ public class ReflectionUtils {
 		access(field, () -> field.set(owner, fieldValue));
 	}
 
+	/**
+	 * Stringify an object with reflection
+	 * 
+	 * @param object the object
+	 * @return the string
+	 */
 	public static String string(Object object) {
+		// Null cases
 		if (object == null)
 			return "null";
-
 		Class<?> klass = object.getClass();
+		// Enum case
+		if (klass.isEnum()) {
+			return object.toString();
+		}
+
+		List<Class<?>> primitives = List.of(Integer.class, Double.class, Float.class, Long.class,
+				Character.class, Byte.class, Short.class, String.class, StringBuffer.class,
+				StringBuilder.class);
+		// "Primitives" type
+		if (primitives.stream().anyMatch(p -> p.isAssignableFrom(klass))) {
+			return object.toString();
+		}
+
+		// If it's a collection, only display size and implementation
+		if (Collection.class.isAssignableFrom(klass)) {
+			@SuppressWarnings("unchecked")
+			Collection<Object> list = (List<Object>) object;
+			return "Size: " + list.size() + ", Type : " + klass.getSimpleName();
+		}
+
+		// Generic "json"-like display
 		var str = new StringBuilder("{");
 		for (var field : klass.getDeclaredFields()) {
+			if (Modifier.isFinal(field.getModifiers()))
+				continue;
 			try {
 				access(field, () -> str.append(field.getName() + ": " + field.get(object) + ", "));
 			} catch (Exception e) {
