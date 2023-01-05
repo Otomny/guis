@@ -79,7 +79,7 @@ public class ReflectionUtils {
 	}
 
 	/**
-	 * Get the tpye of the list hold by the field
+	 * Get the type of the list hold by the field
 	 * 
 	 * @param field The field
 	 * @return The type of the list
