@@ -19,6 +19,14 @@ public interface OFieldEditor {
 	boolean accept(Field field);
 
 	/**
+	 * 
+	 * @return If this editor allow null values by default
+	 */
+	default boolean allowNullValues(){
+		return false;
+	}
+
+	/**
 	 * @param player    The player to show inventory to
 	 * @param toEdit    The objet to edit
 	 * @param field     The field to edit

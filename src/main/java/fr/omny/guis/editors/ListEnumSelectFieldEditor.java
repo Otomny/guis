@@ -29,7 +29,6 @@ public class ListEnumSelectFieldEditor implements OFieldEditor {
 	@Override
 	public void edit(Player player, Object toEdit, Field field, OField fieldData, Runnable onClose) {
 		edit(0, player, toEdit, field, fieldData, onClose);
-
 	}
 
 	protected void edit(int page, Player player, Object toEdit, Field field, OField fieldData,

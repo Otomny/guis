@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 import org.bukkit.Material;
 
 import fr.omny.guis.attributes.ListOperation;
+import fr.omny.guis.editors.stringifiers.DefaultStringifier;
+import fr.omny.guis.editors.stringifiers.Stringifier;
 import fr.omny.guis.utils.Utils;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -19,6 +21,10 @@ public @interface OField {
 	Material display() default Material.BOOK;
 
 	String[] description() default {};
+
+	Class<?> editor() default Object.class;
+
+	Class<? extends Stringifier> stringifier() default DefaultStringifier.class;
 
 	ListOperation[] listOperations() default {
 			ListOperation.ADD, ListOperation.EDIT, ListOperation.REMOVE };

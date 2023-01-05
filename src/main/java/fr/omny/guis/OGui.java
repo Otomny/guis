@@ -2,6 +2,7 @@ package fr.omny.guis;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,9 @@ import fr.omny.guis.editors.ListFieldEditor;
 import fr.omny.guis.editors.MaterialFieldEditor;
 import fr.omny.guis.editors.OClassFieldEditor;
 import fr.omny.guis.editors.OMainEditor;
+import fr.omny.guis.editors.ObjectInListFieldEditor;
 import fr.omny.guis.editors.StringFieldEditor;
+import fr.omny.guis.editors.stringifiers.Stringifier;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
 import lombok.Getter;
@@ -40,6 +43,8 @@ public class OGui {
 	private static Plugin plugin;
 
 	private static final List<OFieldEditor> EDITORS = new ArrayList<>();
+
+	private static final Map<Class<? extends Stringifier>, Stringifier> STRINGIFIERS = new HashMap<>();
 
 	/**
 	 * Register an editor for a type
@@ -73,7 +78,7 @@ public class OGui {
 		plugin.getLogger().info("OGui loaded successfuly !");
 		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(),
 				new ListFieldEditor(), new EnumFieldEditor(), new ListEnumSelectFieldEditor(),
-				new OClassFieldEditor(), new MaterialFieldEditor());
+				new OClassFieldEditor(), new MaterialFieldEditor(), new ObjectInListFieldEditor());
 	}
 
 	/**
@@ -119,6 +124,16 @@ public class OGui {
 	private void init() {}
 
 	private List<OFieldEditor> findForType(Field field) {
+		var fieldData = field.getAnnotation(OField.class);
+		if (fieldData.editor() != Object.class
+				&& OFieldEditor.class.isAssignableFrom(fieldData.editor())) {
+
+			var fieldEditor = EDITORS.stream().filter(editor -> editor.getClass() == fieldData.editor())
+					.findFirst().orElse(null);
+			if (fieldEditor != null)
+				return List.of(fieldEditor);
+		}
+
 		return EDITORS.stream().filter(f -> f.accept(field)).toList();
 	}
 
@@ -142,12 +157,23 @@ public class OGui {
 			OFieldEditor editor = editors.size() == 1 ? editors.get(0)
 					: editors.stream().filter(e -> e.getClass().isAnnotationPresent(OMainEditor.class))
 							.findFirst().orElse(editors.get(0));
+			
+			Class<? extends Stringifier> stringifierClass = data.stringifier();
+			if(!STRINGIFIERS.containsKey(stringifierClass)){
+				try {
+					STRINGIFIERS.put(stringifierClass, Stringifier.class.cast(stringifierClass.getConstructor().newInstance()));
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+					e1.printStackTrace();
+				}
+			}
+			var stringifier = STRINGIFIERS.get(stringifierClass);
 
 			var guiItemBuilder = value instanceof Itemable item ? item.item() : new GuiItemBuilder();
 			guiBuilder.item(guiItemBuilder.name(fieldName).icon(data.display())
-					.description("§7§oValue: §e" + ReflectionUtils.string(value)).breakLine()
+					.description("§7§oValue: §e" + stringifier.toString(value)).breakLine()
 					.description(data.description()).click(() -> {
-						if (value == null) {
+						if (value == null && !editor.allowNullValues()) {
 							player.playSound(player, null, null, 0, 0);
 							player.sendMessage(
 									"§cYou can't edit a null field, you must initialize it to a default value first.");

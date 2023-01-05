@@ -23,6 +23,11 @@ public class EnumFieldEditor implements OFieldEditor {
 	}
 
 	@Override
+	public boolean allowNullValues() {
+		return true;
+	}
+
+	@Override
 	public void edit(Player player, Object toEdit, Field field, OField fieldData, Runnable onClose) {
 		edit(0, player, toEdit, field, fieldData, onClose);
 	}
