@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import fr.omny.guis.attributes.Itemable;
 import fr.omny.guis.backend.GuiBuilder;
 import fr.omny.guis.backend.GuiItem;
 import fr.omny.guis.backend.GuiItemBuilder;
@@ -22,6 +23,8 @@ import fr.omny.guis.editors.EnumFieldEditor;
 import fr.omny.guis.editors.IntegerFieldEditor;
 import fr.omny.guis.editors.ListEnumSelectFieldEditor;
 import fr.omny.guis.editors.ListFieldEditor;
+import fr.omny.guis.editors.MaterialFieldEditor;
+import fr.omny.guis.editors.OClassFieldEditor;
 import fr.omny.guis.editors.OMainEditor;
 import fr.omny.guis.editors.StringFieldEditor;
 import fr.omny.guis.utils.ReflectionUtils;
@@ -69,7 +72,8 @@ public class OGui {
 
 		plugin.getLogger().info("OGui loaded successfuly !");
 		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(),
-				new ListFieldEditor(), new EnumFieldEditor(), new ListEnumSelectFieldEditor());
+				new ListFieldEditor(), new EnumFieldEditor(), new ListEnumSelectFieldEditor(),
+				new OClassFieldEditor(), new MaterialFieldEditor());
 	}
 
 	/**
@@ -139,10 +143,18 @@ public class OGui {
 					: editors.stream().filter(e -> e.getClass().isAnnotationPresent(OMainEditor.class))
 							.findFirst().orElse(editors.get(0));
 
-			guiBuilder.item(new GuiItemBuilder().name(fieldName).icon(data.display())
+			var guiItemBuilder = value instanceof Itemable item ? item.item() : new GuiItemBuilder();
+			guiBuilder.item(guiItemBuilder.name(fieldName).icon(data.display())
 					.description("§7§oValue: §e" + ReflectionUtils.string(value)).breakLine()
-					.description(data.description())
-					.click(() -> editor.edit(player, this.toEdit, field, data, () -> open(player))).build());
+					.description(data.description()).click(() -> {
+						if (value == null) {
+							player.playSound(player, null, null, 0, 0);
+							player.sendMessage(
+									"§cYou can't edit a null field, you must initialize it to a default value first.");
+						} else {
+							editor.edit(player, this.toEdit, field, data, () -> open(player));
+						}
+					}).build());
 		}
 		guiBuilder.item(9, GuiItem.back(onClose));
 		guiBuilder.open(player);
@@ -156,10 +168,9 @@ public class OGui {
 		Map<Field, OField> fields = new HashMap<>();
 
 		// Support nested gui edit
-		if (klass.getSuperclass() != Object.class) {
-			if (klass.getSuperclass().isAnnotationPresent(OClass.class)) {
-				fields.putAll(findFields(klass.getSuperclass()));
-			}
+		if (klass.getSuperclass() != Object.class
+				&& klass.getSuperclass().isAnnotationPresent(OClass.class)) {
+			fields.putAll(findFields(klass.getSuperclass()));
 		}
 
 		// Look for all fields (public, private, protected and even package)
