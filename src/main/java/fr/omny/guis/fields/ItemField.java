@@ -3,6 +3,7 @@ package fr.omny.guis.fields;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ import lombok.Setter;
 /**
  * Represent an editable item that can be translated to ItemStack
  */
-public class ItemField implements Itemable {
+public class ItemField implements Itemable, Cloneable {
 
 	@OField
 	private Material type = Material.STONE;
@@ -50,7 +51,15 @@ public class ItemField implements Itemable {
 	 * @return The itemstack
 	 */
 	public ItemStack asItem() {
-		return new ItemStack(type, quantity);
+		var item = new ItemStack(type, quantity); 
+		this.enchantments.forEach(e -> e.applyEnchantment(item));
+		return item;
+	}
+
+	@Override
+	public ItemField clone() {
+		return new ItemField(this.type, this.quantity, 
+			this.enchantments.stream().map(EnchantmentField::clone).collect(Collectors.toList()));
 	}
 
 	@Override
