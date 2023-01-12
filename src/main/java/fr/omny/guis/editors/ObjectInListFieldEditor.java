@@ -17,10 +17,6 @@ import fr.omny.guis.editors.providers.ObjectInListProvider;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
 
-/**
- * You can only set this by using the editor properties of {@link OField}
- * annotation
- */
 public class ObjectInListFieldEditor implements OFieldEditor {
 
   private static List<ObjectInListProvider<?>> PROVIDERS = new ArrayList<>();
@@ -53,9 +49,7 @@ public class ObjectInListFieldEditor implements OFieldEditor {
 
   @Override
   public boolean accept(Field field) {
-    if (!List.class.isAssignableFrom(field.getType()))
-      return false;
-    Class<?> klass = ReflectionUtils.getTypeOfListField(field);
+    Class<?> klass = field.getType();
     return ObjectInListFieldEditor.findProvider(klass) != null;
   }
 
