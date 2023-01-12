@@ -23,19 +23,19 @@ import fr.omny.guis.utils.Utils;
  */
 public class ObjectInListFieldEditor implements OFieldEditor {
 
-  private static List<ObjectInListProvider<?>> list = new ArrayList<>();
+  private static List<ObjectInListProvider<?>> PROVIDERS = new ArrayList<>();
 
   /**
    * @param provider
    */
   public static void register(ObjectInListProvider<?> provider) {
-    list.add(provider);
+    PROVIDERS.add(provider);
   }
 
   @SuppressWarnings("unchecked")
   public static Optional<ObjectInListProvider<Object>>
   findProvider(Class<?> type) {
-    return list.stream()
+    return PROVIDERS.stream()
         .filter(p -> p.type() == type)
         .map(p -> (ObjectInListProvider<Object>)p)
         .findFirst();
@@ -75,7 +75,7 @@ public class ObjectInListFieldEditor implements OFieldEditor {
       onClose.run();
       return;
     }
-		var provider = optionalProvider.get();
+    var provider = optionalProvider.get();
     Object selectedValue = ReflectionUtils.get(toEdit, field);
     new GuiListBuilder<>(Utils.replaceColor(Utils.orString(
                              fieldData.value(), "&e" + field.getName())),
