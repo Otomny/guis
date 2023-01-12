@@ -46,6 +46,8 @@ public class ListSelectFieldEditor implements OFieldEditor {
       return;
     }
     var provider = optionalProvider.get();
+    // Should be a list due to check at line 26
+    @SuppressWarnings("unchecked")
     Collection<Object> listValue =
         (Collection<Object>)ReflectionUtils.get(toEdit, field);
     new GuiListBuilder<>(Utils.replaceColor(Utils.orString(
