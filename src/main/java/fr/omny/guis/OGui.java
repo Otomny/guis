@@ -180,11 +180,11 @@ public class OGui {
 		for (var entry : findMethods(this.toEditClass).entrySet()) {
 			var method = entry.getKey();
 			var data = entry.getValue();
-			String fieldName = Utils.replaceColor(Utils.orString(data.value(), "&e" + method.getName()));
-			guiBuilder.item(new GuiItemBuilder().name(fieldName).icon(data.icon()).breakLine().description(data.description()).click(() -> {
+			String methodName = Utils.replaceColor(Utils.orString(data.value(), "&e" + method.getName()));
+			guiBuilder.item(new GuiItemBuilder().name(methodName).icon(data.icon()).breakLine().description(data.description()).click(() -> {
 				method.setAccessible(true);
 				try {
-					method.invoke(this.toEditClass, new Object[]{});
+					method.invoke(this.toEdit, new Object[method.getParameterCount()]);
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					e.printStackTrace();
 				}
@@ -213,7 +213,7 @@ public class OGui {
 					}
 				});
 			} catch (Exception e) {
-				OGui.plugin.getLogger().log(Level.SEVERE, "Error happened while getting field data");
+				OGui.plugin.getLogger().log(Level.SEVERE, "Error happened while getting method data");
 				e.printStackTrace();
 			}
 		}
