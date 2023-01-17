@@ -28,6 +28,7 @@ import fr.omny.guis.editors.IntegerFieldEditor;
 import fr.omny.guis.editors.ListEnumSelectFieldEditor;
 import fr.omny.guis.editors.ListFieldEditor;
 import fr.omny.guis.editors.ListSelectFieldEditor;
+import fr.omny.guis.editors.LocationFieldEditor;
 import fr.omny.guis.editors.MaterialFieldEditor;
 import fr.omny.guis.editors.OClassFieldEditor;
 import fr.omny.guis.editors.OMainEditor;
@@ -79,7 +80,7 @@ public class OGui {
 
 		plugin.getLogger().info("OGui loaded successfuly !");
 		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(), new ListFieldEditor(), new EnumFieldEditor(), new ListEnumSelectFieldEditor(), new OClassFieldEditor(),
-				new MaterialFieldEditor(), new ObjectInListFieldEditor(), new ListSelectFieldEditor());
+				new MaterialFieldEditor(), new ObjectInListFieldEditor(), new ListSelectFieldEditor(), new LocationFieldEditor());
 	}
 
 	/**
