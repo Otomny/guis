@@ -14,6 +14,7 @@ import fr.omny.guis.OField;
 import fr.omny.guis.OFieldEditor;
 import fr.omny.guis.OGui;
 import fr.omny.guis.attributes.ListOperation;
+import fr.omny.guis.attributes.Ordering;
 import fr.omny.guis.attributes.Updateable;
 import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListBuilder;
@@ -45,6 +46,7 @@ public class ListFieldEditor implements OFieldEditor {
 			ReflectionUtils.access(field, () -> {
 				@SuppressWarnings("unchecked")
 				List<Object> list = (List<Object>) field.get(toEdit);
+				Ordering.processOrdering(fieldData.ordering(), list);
 				var guiBuilder = new GuiListBuilder<>(
 						Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())), list)
 								.page(page)

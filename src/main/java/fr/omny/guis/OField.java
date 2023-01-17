@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 import org.bukkit.Material;
 
 import fr.omny.guis.attributes.ListOperation;
+import fr.omny.guis.attributes.Ordering;
+import fr.omny.guis.attributes.ordering.DefaultOrdering;
 import fr.omny.guis.editors.stringifiers.DefaultStringifier;
 import fr.omny.guis.editors.stringifiers.Stringifier;
 import fr.omny.guis.utils.Utils;
@@ -28,4 +30,6 @@ public @interface OField {
 
 	ListOperation[] listOperations() default {
 			ListOperation.ADD, ListOperation.EDIT, ListOperation.REMOVE };
+
+	Class<? extends Ordering> ordering() default DefaultOrdering.class;
 }

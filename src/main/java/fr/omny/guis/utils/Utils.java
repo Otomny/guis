@@ -1,6 +1,8 @@
 package fr.omny.guis.utils;
 
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,20 @@ public class Utils {
 	 * Represent a string default value
 	 */
 	public static final String STRING_DEFAULT_VALUE = "__none__";
+
+	/**
+	 * 
+	 * @param collection
+	 * @return
+	 */
+	public static boolean isMutable(Collection<?> collection){
+		try{
+			collection.addAll(Collections.emptyList());
+			return true;
+		}catch(UnsupportedOperationException e){
+			return false;
+		}
+	}
 
 	/**
 	 * @param value

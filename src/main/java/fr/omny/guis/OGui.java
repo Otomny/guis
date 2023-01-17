@@ -68,19 +68,31 @@ public class OGui {
 			throw new IllegalArgumentException("plugin provided is null");
 		}
 		if (OGui.plugin != null) {
-			throw new IllegalStateException(
-					String.format("OGui registered method called twice (passed %s, registered %s)",
-							plugin.getName(), OGui.plugin.getName()));
+			throw new IllegalStateException(String.format("OGui registered method called twice (passed %s, registered %s)", plugin.getName(), OGui.plugin.getName()));
 		}
 		OGui.plugin = plugin;
 
 		Bukkit.getPluginManager().registerEvents(new GuiListener(), plugin);
 
 		plugin.getLogger().info("OGui loaded successfuly !");
-		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(),
-				new ListFieldEditor(), new EnumFieldEditor(), new ListEnumSelectFieldEditor(),
-				new OClassFieldEditor(), new MaterialFieldEditor(), new ObjectInListFieldEditor(),
-				new ListSelectFieldEditor());
+		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(), new ListFieldEditor(), new EnumFieldEditor(), new ListEnumSelectFieldEditor(), new OClassFieldEditor(),
+				new MaterialFieldEditor(), new ObjectInListFieldEditor(), new ListSelectFieldEditor());
+	}
+
+	/**
+	 * @param o
+	 * @param stringifierClass
+	 * @return
+	 */
+	public static String stringify(Object o, Class<? extends Stringifier> stringifierClass) {
+		if (!STRINGIFIERS.containsKey(stringifierClass)) {
+			try {
+				STRINGIFIERS.put(stringifierClass, Stringifier.class.cast(stringifierClass.getConstructor().newInstance()));
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return STRINGIFIERS.get(stringifierClass).toString(o);
 	}
 
 	/**
@@ -102,8 +114,7 @@ public class OGui {
 			throw new IllegalArgumentException("Cannot edit null object");
 		}
 		if (!object.getClass().isAnnotationPresent(OClass.class)) {
-			throw new IllegalAccessError(
-					String.format("@OClass annotation is not present on %s", object.getClass().getName()));
+			throw new IllegalAccessError(String.format("@OClass annotation is not present on %s", object.getClass().getName()));
 		}
 		var gui = new OGui(object, onClose);
 		gui.open(player);
@@ -127,11 +138,9 @@ public class OGui {
 
 	private List<OFieldEditor> findForType(Field field) {
 		var fieldData = field.getAnnotation(OField.class);
-		if (fieldData.editor() != Object.class
-				&& OFieldEditor.class.isAssignableFrom(fieldData.editor())) {
+		if (fieldData.editor() != Object.class && OFieldEditor.class.isAssignableFrom(fieldData.editor())) {
 
-			var fieldEditor = EDITORS.stream().filter(editor -> editor.getClass() == fieldData.editor())
-					.findFirst().orElse(null);
+			var fieldEditor = EDITORS.stream().filter(editor -> editor.getClass() == fieldData.editor()).findFirst().orElse(null);
 			if (fieldEditor != null)
 				return List.of(fieldEditor);
 		}
@@ -140,8 +149,7 @@ public class OGui {
 	}
 
 	private void open(Player player) {
-		var guiBuilder = new GuiBuilder(Utils.orString(this.toEditData.value(), "Editing"))
-				.fillSide(this.toEditData.fillSide());
+		var guiBuilder = new GuiBuilder(Utils.orString(this.toEditData.value(), "Editing")).fillSide(this.toEditData.fillSide());
 
 		for (var entry : findFields(this.toEditClass).entrySet()) {
 			var field = entry.getKey();
@@ -150,39 +158,21 @@ public class OGui {
 			Object value = ReflectionUtils.get(this.toEdit, field);
 			String fieldName = Utils.replaceColor(Utils.orString(data.value(), "&e" + field.getName()));
 			if (editors.isEmpty()) {
-				plugin.getLogger().warning("No editors found for type " + field.getType() + " on field "
-						+ field.getName() + " of class " + this.toEditClass.getSimpleName());
-				guiBuilder.item(new GuiItemBuilder().icon(Material.BARRIER).name(fieldName)
-						.description("§cUnable to found editor for type " + field.getType()).build());
+				plugin.getLogger().warning("No editors found for type " + field.getType() + " on field " + field.getName() + " of class " + this.toEditClass.getSimpleName());
+				guiBuilder.item(new GuiItemBuilder().icon(Material.BARRIER).name(fieldName).description("§cUnable to found editor for type " + field.getType()).build());
 				continue;
 			}
-			OFieldEditor editor = editors.size() == 1 ? editors.get(0)
-					: editors.stream().filter(e -> e.getClass().isAnnotationPresent(OMainEditor.class))
-							.findFirst().orElse(editors.get(0));
-			
-			Class<? extends Stringifier> stringifierClass = data.stringifier();
-			if(!STRINGIFIERS.containsKey(stringifierClass)){
-				try {
-					STRINGIFIERS.put(stringifierClass, Stringifier.class.cast(stringifierClass.getConstructor().newInstance()));
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException | SecurityException e1) {
-					e1.printStackTrace();
-				}
-			}
-			var stringifier = STRINGIFIERS.get(stringifierClass);
+			OFieldEditor editor = editors.size() == 1 ? editors.get(0) : editors.stream().filter(e -> e.getClass().isAnnotationPresent(OMainEditor.class)).findFirst().orElse(editors.get(0));
 
 			var guiItemBuilder = value instanceof Itemable item ? item.item() : new GuiItemBuilder();
-			guiBuilder.item(guiItemBuilder.name(fieldName).icon(data.display())
-					.description("§7§oValue: §e" + stringifier.toString(value)).breakLine()
-					.description(data.description()).click(() -> {
-						if (value == null && !editor.allowNullValues()) {
-							player.playSound(player, null, null, 0, 0);
-							player.sendMessage(
-									"§cYou can't edit a null field, you must initialize it to a default value first.");
-						} else {
-							editor.edit(player, this.toEdit, field, data, () -> open(player));
-						}
-					}).build());
+			guiBuilder.item(guiItemBuilder.name(fieldName).icon(data.display()).description("§7§oValue: §e" + stringify(value, data.stringifier())).breakLine().description(data.description()).click(() -> {
+				if (value == null && !editor.allowNullValues()) {
+					player.playSound(player, null, null, 0, 0);
+					player.sendMessage("§cYou can't edit a null field, you must initialize it to a default value first.");
+				} else {
+					editor.edit(player, this.toEdit, field, data, () -> open(player));
+				}
+			}).build());
 		}
 		guiBuilder.item(9, GuiItem.back(onClose));
 		guiBuilder.open(player);
@@ -196,8 +186,7 @@ public class OGui {
 		Map<Field, OField> fields = new HashMap<>();
 
 		// Support nested gui edit
-		if (klass.getSuperclass() != Object.class
-				&& klass.getSuperclass().isAnnotationPresent(OClass.class)) {
+		if (klass.getSuperclass() != Object.class && klass.getSuperclass().isAnnotationPresent(OClass.class)) {
 			fields.putAll(findFields(klass.getSuperclass()));
 		}
 

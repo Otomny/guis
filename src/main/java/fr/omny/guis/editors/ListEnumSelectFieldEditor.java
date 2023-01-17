@@ -2,6 +2,7 @@ package fr.omny.guis.editors;
 
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.bukkit.event.inventory.ClickType;
 
 import fr.omny.guis.OField;
 import fr.omny.guis.OFieldEditor;
+import fr.omny.guis.attributes.Ordering;
 import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListBuilder;
 import fr.omny.guis.utils.ReflectionUtils;
@@ -31,35 +33,30 @@ public class ListEnumSelectFieldEditor implements OFieldEditor {
 		edit(0, player, toEdit, field, fieldData, onClose);
 	}
 
-	protected void edit(int page, Player player, Object toEdit, Field field, OField fieldData,
-			Runnable onClose) {
+	protected void edit(int page, Player player, Object toEdit, Field field, OField fieldData, Runnable onClose) {
 		try {
 			Class<?> enumClass = ReflectionUtils.getTypeOfListField(field);
-			List<Object> enumValues = Arrays.asList(enumClass.getEnumConstants());
+			List<Object> enumValues = new ArrayList<>(Arrays.asList(enumClass.getEnumConstants()));
+			Ordering.processOrdering(fieldData.ordering(), enumValues);
 			@SuppressWarnings("unchecked")
 			List<Object> selected = (List<Object>) ReflectionUtils.get(toEdit, field);
-			var guiBuilder = new GuiListBuilder<>(
-					Utils.replaceColor(Utils.orString(fieldData.value(), "&7" + field.getName())), enumValues)
-							.page(page).itemCreation(obj -> {
-								boolean contains = selected.contains(obj);
-								return new GuiItemBuilder().icon(contains ? Material.DIAMOND : Material.NAME_TAG)
-										.name((contains ? "§b" : "§7") + obj.toString()).breakLine()
-										.description("§7- Right click to add", "§7- Left click to remove")
-										.click((p, slot, click) -> {
-											if (click == ClickType.LEFT) {
-												if (contains) {
-													selected.remove(obj);
-												}
-											} else if (click == ClickType.RIGHT) {
-												if (!contains) {
-													selected.add(obj);
-												}
-											}
-											edit(page, player, toEdit, field, fieldData, onClose);
-											return true;
-										});
-							}).pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose))
-							.close(onClose);
+			var guiBuilder = new GuiListBuilder<>(Utils.replaceColor(Utils.orString(fieldData.value(), "&7" + field.getName())), enumValues).page(page).itemCreation(obj -> {
+				boolean contains = selected.contains(obj);
+				return new GuiItemBuilder().icon(contains ? Material.DIAMOND : Material.NAME_TAG).name((contains ? "§b" : "§7") + obj.toString()).breakLine()
+						.description("§7- Right click to add", "§7- Left click to remove").click((p, slot, click) -> {
+							if (click == ClickType.LEFT) {
+								if (contains) {
+									selected.remove(obj);
+								}
+							} else if (click == ClickType.RIGHT) {
+								if (!contains) {
+									selected.add(obj);
+								}
+							}
+							edit(page, player, toEdit, field, fieldData, onClose);
+							return true;
+						});
+			}).pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose)).close(onClose);
 
 			guiBuilder.open(player);
 		} catch (Exception e) {
