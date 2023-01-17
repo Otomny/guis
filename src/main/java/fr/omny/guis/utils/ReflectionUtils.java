@@ -2,6 +2,7 @@ package fr.omny.guis.utils;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
@@ -17,6 +18,14 @@ public class ReflectionUtils {
 	 */
 	public static boolean isHidden(Field field) {
 		return Modifier.isPrivate(field.getModifiers()) || Modifier.isProtected(field.getModifiers());
+	}
+
+	/**
+	 * @param field
+	 * @return True if the method is private
+	 */
+	public static boolean isHidden(Method method) {
+		return Modifier.isPrivate(method.getModifiers()) || Modifier.isProtected(method.getModifiers());
 	}
 
 	/**
@@ -106,6 +115,27 @@ public class ReflectionUtils {
 		task.work();
 		if (hidden) {
 			field.setAccessible(false);
+		}
+	}
+
+	/**
+	 * Helper function to edit field, and eliminate boiler plate of set accessible
+	 * 
+	 * @param field
+	 * @param task
+	 * @throws Exception
+	 */
+	public static void access(Method method, ThrowableTask task) throws Exception {
+		Objects.requireNonNull(task);
+		Objects.requireNonNull(method);
+
+		var hidden = isHidden(method);
+		if (hidden) {
+			method.setAccessible(true);
+		}
+		task.work();
+		if (hidden) {
+			method.setAccessible(false);
 		}
 	}
 

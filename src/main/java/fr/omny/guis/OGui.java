@@ -3,6 +3,7 @@ package fr.omny.guis;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -167,16 +170,54 @@ public class OGui {
 			var guiItemBuilder = value instanceof Itemable item ? item.item() : new GuiItemBuilder();
 			guiBuilder.item(guiItemBuilder.name(fieldName).icon(data.display()).description("§7§oValue: §e" + stringify(value, data.stringifier())).breakLine().description(data.description()).click(() -> {
 				if (value == null && !editor.allowNullValues()) {
-					player.playSound(player, null, null, 0, 0);
+					player.playSound(player, Sound.ENTITY_VILLAGER_NO, SoundCategory.PLAYERS, 1.0f, 0);
 					player.sendMessage("§cYou can't edit a null field, you must initialize it to a default value first.");
 				} else {
 					editor.edit(player, this.toEdit, field, data, () -> open(player));
 				}
 			}).build());
 		}
+		for (var entry : findMethods(this.toEditClass).entrySet()) {
+			var method = entry.getKey();
+			var data = entry.getValue();
+			String fieldName = Utils.replaceColor(Utils.orString(data.value(), "&e" + method.getName()));
+			guiBuilder.item(new GuiItemBuilder().name(fieldName).icon(data.icon()).breakLine().description(data.description()).click(() -> {
+				method.setAccessible(true);
+				try {
+					method.invoke(this.toEditClass, new Object[]{});
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}).build());
+		}
 		guiBuilder.item(9, GuiItem.back(onClose));
 		guiBuilder.open(player);
 
+	}
+
+	private Map<Method, OMethod> findMethods(Class<?> klass) {
+		Map<Method, OMethod> methods = new HashMap<>();
+
+		// Support nested gui edit
+		if (klass.getSuperclass() != Object.class && klass.getSuperclass().isAnnotationPresent(OClass.class)) {
+			methods.putAll(findMethods(klass.getSuperclass()));
+		}
+
+		// Look for all methods (public, private, protected and even package)
+		for (Method method : klass.getDeclaredMethods()) {
+			// In case the method is private, make is accessible
+			try {
+				ReflectionUtils.access(method, () -> {
+					if (method.isAnnotationPresent(OMethod.class)) {
+						methods.put(method, method.getAnnotation(OMethod.class));
+					}
+				});
+			} catch (Exception e) {
+				OGui.plugin.getLogger().log(Level.SEVERE, "Error happened while getting field data");
+				e.printStackTrace();
+			}
+		}
+		return methods;
 	}
 
 	/**
