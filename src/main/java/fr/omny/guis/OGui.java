@@ -22,6 +22,7 @@ import fr.omny.guis.backend.GuiBuilder;
 import fr.omny.guis.backend.GuiItem;
 import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListener;
+import fr.omny.guis.editors.AutomaticFieldEditor;
 import fr.omny.guis.editors.DoubleFieldEditor;
 import fr.omny.guis.editors.EnumFieldEditor;
 import fr.omny.guis.editors.IntegerFieldEditor;
@@ -142,7 +143,7 @@ public class OGui {
 
 	private List<OFieldEditor> findForType(Field field) {
 		var fieldData = field.getAnnotation(OField.class);
-		if (fieldData.editor() != Object.class && OFieldEditor.class.isAssignableFrom(fieldData.editor())) {
+		if (fieldData.editor() != AutomaticFieldEditor.class && OFieldEditor.class.isAssignableFrom(fieldData.editor())) {
 
 			var fieldEditor = EDITORS.stream().filter(editor -> editor.getClass() == fieldData.editor()).findFirst().orElse(null);
 			if (fieldEditor != null)

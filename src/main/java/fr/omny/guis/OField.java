@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import fr.omny.guis.attributes.ListOperation;
 import fr.omny.guis.attributes.Ordering;
 import fr.omny.guis.attributes.ordering.DefaultOrdering;
+import fr.omny.guis.editors.AutomaticFieldEditor;
 import fr.omny.guis.editors.providers.AutomaticProvider;
 import fr.omny.guis.editors.providers.OProvider;
 import fr.omny.guis.editors.stringifiers.DefaultStringifier;
@@ -19,21 +20,58 @@ import fr.omny.guis.utils.Utils;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
+/**
+ * Categorize a field as editable in a GUI
+ */
 public @interface OField {
+
+	/**
+	 * The displayed item title in the inventory
+	 * @return
+	 */
 	String value() default Utils.STRING_DEFAULT_VALUE;
 
+	/**
+	 * The displayed item type in the inventory
+	 * @return
+	 */
 	Material display() default Material.BOOK;
 
+	/**
+	 * The displayed item lore in the inventory
+	 * @return
+	 */
 	String[] description() default {};
 
-	Class<?> editor() default Object.class;
+	/**
+	 * Custom editor for the object type
+	 * @return
+	 */
+	Class<? extends OFieldEditor> editor() default AutomaticFieldEditor.class;
 
+	/**
+	 * The function to use in order to transform a string in an object
+	 * to be displayed in the inventory
+	 * @return
+	 */
 	Class<? extends Stringifier> stringifier() default DefaultStringifier.class;
 
+	/**
+	 * Operations permited for a list (empty = only viewing)
+	 * @return
+	 */
 	ListOperation[] listOperations() default {
 			ListOperation.ADD, ListOperation.EDIT, ListOperation.REMOVE };
 
+	/**
+	 * Ordering of the displayed elements
+	 * @return
+	 */
 	Class<? extends Ordering> ordering() default DefaultOrdering.class;
 
+	/**
+	 * Provide a list where the object can be selected from
+	 * @return
+	 */
 	OProvider provider() default @OProvider(provider = AutomaticProvider.class);
 }
