@@ -186,7 +186,7 @@ public class OGui {
 			guiBuilder.item(new GuiItemBuilder().name(methodName).icon(data.icon()).breakLine().description(data.description()).click(() -> {
 				method.setAccessible(true);
 				try {
-					method.invoke(this.toEdit, new Object[method.getParameterCount()]);
+					ReflectionUtils.callWithInject(method, this.toEdit, player);
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					e.printStackTrace();
 				}

@@ -2,13 +2,16 @@ package fr.omny.guis.utils;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class ReflectionUtils {
 
@@ -44,8 +47,7 @@ public class ReflectionUtils {
 				field.setAccessible(false);
 			}
 			return Optional.of(value);
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException
-				| IllegalAccessException e) {
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			return Optional.empty();
 		}
 	}
@@ -118,6 +120,29 @@ public class ReflectionUtils {
 		}
 	}
 
+	public static void callWithInject(Method method, Object instance, Object... instanceParameters)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Object[] parameters = new Object[method.getParameterCount()];
+		Parameter[] parametersData = method.getParameters();
+
+		Function<Class<?>, Integer> getParameter = (klass) -> {
+			for (int i = 0; i < parametersData.length; i++) {
+				if (parametersData[i].getType().isAssignableFrom(klass))
+					return i;
+			}
+			return -1;
+		};
+
+		for (Object iParam : instanceParameters) {
+			int index = getParameter.apply(iParam.getClass());
+			if (index >= 0) {
+				parameters[index] = iParam;
+			}
+		}
+		
+		method.invoke(instance, parameters);
+	}
+
 	/**
 	 * Helper function to edit field, and eliminate boiler plate of set accessible
 	 * 
@@ -163,9 +188,8 @@ public class ReflectionUtils {
 			return object.toString();
 		}
 
-		List<Class<?>> primitives = List.of(Integer.class, Double.class, Float.class, Long.class,
-				Character.class, Byte.class, Short.class, String.class, StringBuffer.class,
-				StringBuilder.class);
+		List<Class<?>> primitives = List.of(Integer.class, Double.class, Float.class, Long.class, Character.class,
+				Byte.class, Short.class, String.class, StringBuffer.class, StringBuilder.class);
 		// "Primitives" type
 		if (primitives.stream().anyMatch(p -> p.isAssignableFrom(klass))) {
 			return object.toString();
