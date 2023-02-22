@@ -169,7 +169,7 @@ public class OGui {
 			}
 			OFieldEditor editor = editors.size() == 1 ? editors.get(0) : editors.stream().filter(e -> e.getClass().isAnnotationPresent(OMainEditor.class)).findFirst().orElse(editors.get(0));
 
-			var guiItemBuilder = value instanceof Itemable item ? item.item() : new GuiItemBuilder();
+			var guiItemBuilder = value instanceof Itemable item ? item.item(player) : new GuiItemBuilder();
 			guiBuilder.item(guiItemBuilder.name(fieldName).icon(data.display()).description("§7§oValue: §e" + stringify(value, data.stringifier())).breakLine().description(data.description()).click(() -> {
 				if (value == null && !editor.allowNullValues()) {
 					player.playSound(player, Sound.ENTITY_VILLAGER_NO, SoundCategory.PLAYERS, 1.0f, 0);

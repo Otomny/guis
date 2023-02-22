@@ -102,7 +102,7 @@ public class GuiListBuilder<T> {
 			final int index = i;
 			var objectAt = list.get(index);
 
-			GuiItemBuilder guiItemBuilder = objectAt instanceof Itemable item ? item.item()
+			GuiItemBuilder guiItemBuilder = objectAt instanceof Itemable item ? item.item(player)
 					: generator.apply(objectAt);
 
 			guiBuilder.item(guiItemBuilder.build());

@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import fr.omny.guis.OClass;
@@ -65,7 +66,7 @@ public class EnchantmentField implements Cloneable, Itemable, Updateable{
 	}
 
 	@Override
-	public GuiItemBuilder item() {
+	public GuiItemBuilder item(Player player) {
 		return new GuiItemBuilder()
 			.icon(Material.ENCHANTED_BOOK)
 			.name(this.enchantment == null ? "§cUndefined" : this.enchantment.getKey().getKey())

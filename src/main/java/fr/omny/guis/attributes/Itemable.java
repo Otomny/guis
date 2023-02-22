@@ -1,5 +1,7 @@
 package fr.omny.guis.attributes;
 
+import org.bukkit.entity.Player;
+
 import fr.omny.guis.backend.GuiItemBuilder;
 
 /**
@@ -13,5 +15,5 @@ public interface Itemable {
    *
    * @return The item to be displayed
    */
-  GuiItemBuilder item();
+  GuiItemBuilder item(Player player);
 }

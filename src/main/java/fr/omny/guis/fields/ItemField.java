@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import fr.omny.guis.OClass;
@@ -41,7 +42,7 @@ public class ItemField implements Itemable, Cloneable {
 	}
 
 	@Override
-	public GuiItemBuilder item() {
+	public GuiItemBuilder item(Player player) {
 		return new GuiItemBuilder().icon(new ItemStack(type, quantity));
 	}
 
