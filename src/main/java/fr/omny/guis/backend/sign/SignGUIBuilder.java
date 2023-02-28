@@ -1,6 +1,5 @@
 package fr.omny.guis.backend.sign;
 
-
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -14,7 +13,10 @@ import lombok.Getter;
 @Getter
 public class SignGUIBuilder {
 
-	public static Function<SignGUIBuilder, ISignGui> SIGN_GUI_CREATOR = SignGUI::new;
+	public static Function<SignGUIBuilder, ISignGui> SIGN_GUI_CREATOR = (guiBuilder) -> {
+		// lazy evaluation
+		return new SignGUI(guiBuilder);
+	};
 
 	private Optional<Consumer<String>> onClose = Optional.empty();
 	private String title = "Sign Edit";
@@ -49,8 +51,8 @@ public class SignGUIBuilder {
 		build().open(player);
 	}
 
-	public SignGUI build() {
-		return new SignGUI(this);
+	public ISignGui build() {
+		return SIGN_GUI_CREATOR.apply(this);
 	}
 
 }
