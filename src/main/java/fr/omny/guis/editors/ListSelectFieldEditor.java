@@ -1,6 +1,5 @@
 package fr.omny.guis.editors;
 
-
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class ListSelectFieldEditor implements OFieldEditor {
 		if (!List.class.isAssignableFrom(field.getType()))
 			return false;
 		Class<?> klass = ReflectionUtils.getTypeOfListField(field);
-		return ObjectInListFieldEditor.findProvider(klass) != null;
+		return ObjectInListFieldEditor.findProvider(klass).isPresent();
 	}
 
 	@Override
@@ -48,22 +47,24 @@ public class ListSelectFieldEditor implements OFieldEditor {
 		@SuppressWarnings("unchecked")
 		List<Object> listValue = (List<Object>) ReflectionUtils.get(toEdit, field);
 		Ordering.processOrdering(fieldData.ordering(), listValue);
-		new GuiListBuilder<>(Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())), provider.provide()).page(page).itemCreation(obj -> {
-			boolean selected = listValue.contains(obj);
-			return new GuiItemBuilder().name((selected ? "§b" : "§e") + provider.asString(obj)).icon(selected ? Material.DIAMOND : fieldData.display()).breakLine()
-					.description("§7§oValue: §e" + provider.asString(obj)).click((p, slot, click) -> {
-						try {
-							if (selected) {
-								listValue.remove(obj);
-							} else {
-								listValue.add(obj);
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						edit(page, player, toEdit, field, fieldData, onClose);
-						return true;
-					});
-		}).pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose)).close(onClose).open(player);
+		new GuiListBuilder<>(Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())),
+				provider.provide()).page(page).itemCreation(obj -> {
+					boolean selected = listValue.contains(obj);
+					return new GuiItemBuilder().name((selected ? "§b" : "§e") + provider.asString(obj))
+							.icon(selected ? Material.DIAMOND : fieldData.display()).breakLine()
+							.description("§7§oValue: §e" + provider.asString(obj)).click((p, slot, click) -> {
+								try {
+									if (selected) {
+										listValue.remove(obj);
+									} else {
+										listValue.add(obj);
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								edit(page, player, toEdit, field, fieldData, onClose);
+								return true;
+							});
+				}).pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose)).close(onClose).open(player);
 	}
 }

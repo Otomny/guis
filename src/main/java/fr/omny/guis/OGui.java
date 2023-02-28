@@ -23,6 +23,7 @@ import fr.omny.guis.backend.GuiItem;
 import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListener;
 import fr.omny.guis.editors.AutomaticFieldEditor;
+import fr.omny.guis.editors.BooleanFieldEditor;
 import fr.omny.guis.editors.DoubleFieldEditor;
 import fr.omny.guis.editors.EnumFieldEditor;
 import fr.omny.guis.editors.IntegerFieldEditor;
@@ -84,7 +85,7 @@ public class OGui {
 		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(), new ListFieldEditor(),
 				new EnumFieldEditor(), new ListEnumSelectFieldEditor(), new OClassFieldEditor(),
 				new MaterialFieldEditor(), new ObjectInListFieldEditor(), new ListSelectFieldEditor(),
-				new LocationFieldEditor());
+				new LocationFieldEditor(), new BooleanFieldEditor());
 	}
 
 	/**

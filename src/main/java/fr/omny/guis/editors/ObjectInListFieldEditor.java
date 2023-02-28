@@ -68,7 +68,7 @@ public class ObjectInListFieldEditor implements OFieldEditor {
 	@Override
 	public boolean accept(Field field) {
 		Class<?> klass = field.getType();
-		return ObjectInListFieldEditor.findProvider(klass) != null;
+		return ObjectInListFieldEditor.findProvider(klass).isPresent();
 	}
 
 	@Override

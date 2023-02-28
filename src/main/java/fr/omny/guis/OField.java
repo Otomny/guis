@@ -38,6 +38,12 @@ public @interface OField {
 	Material display() default Material.BOOK;
 
 	/**
+	 * In case of opening inventory for field edition, return the material used to fill sides
+	 * @return
+	 */
+	Material fillSide() default Material.WHITE_STAINED_GLASS_PANE;
+
+	/**
 	 * The displayed item lore in the inventory
 	 * @return
 	 */
