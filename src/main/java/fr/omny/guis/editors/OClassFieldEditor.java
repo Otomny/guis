@@ -10,8 +10,7 @@ import fr.omny.guis.OFieldEditor;
 import fr.omny.guis.OGui;
 import fr.omny.guis.utils.ReflectionUtils;
 
-@OMainEditor
-public class OClassFieldEditor implements OFieldEditor{
+public class OClassFieldEditor implements OFieldEditor {
 
 	@Override
 	public boolean accept(Field field) {
@@ -24,5 +23,10 @@ public class OClassFieldEditor implements OFieldEditor{
 		Object obj = ReflectionUtils.get(toEdit, field);
 		OGui.open(player, obj, onClose);
 	}
-	
+
+	@Override
+	public int priority() {
+		return 5;
+	}
+
 }

@@ -10,6 +10,7 @@ import fr.omny.guis.OField;
 import fr.omny.guis.OFieldEditor;
 import fr.omny.guis.utils.ReflectionUtils;
 
+@OMainEditor
 public class LocationFieldEditor implements OFieldEditor {
 
 	@Override

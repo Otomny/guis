@@ -1,6 +1,5 @@
 package fr.omny.guis.backend.sign;
 
-
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -24,7 +23,7 @@ import fr.omny.guis.protocolib.WrapperPlayServerBlockChange;
 import fr.omny.guis.protocolib.WrapperPlayServerOpenSignEditor;
 import fr.omny.guis.protocolib.WrapperPlayServerSignLinesUpdate;
 
-public class SignGUI {
+public class SignGUI implements ISignGui {
 
 	private Optional<Consumer<String>> onClose;
 	private String title;
@@ -38,6 +37,7 @@ public class SignGUI {
 		this.validate = signGUIBuilder.getValidate();
 	}
 
+	@Override
 	public void open(Player player) {
 		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 		sendSignData(player, new String[] {

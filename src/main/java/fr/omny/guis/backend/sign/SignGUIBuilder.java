@@ -3,6 +3,7 @@ package fr.omny.guis.backend.sign;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.bukkit.Material;
@@ -12,6 +13,8 @@ import lombok.Getter;
 
 @Getter
 public class SignGUIBuilder {
+
+	public static Function<SignGUIBuilder, ISignGui> SIGN_GUI_CREATOR = SignGUI::new;
 
 	private Optional<Consumer<String>> onClose = Optional.empty();
 	private String title = "Sign Edit";
