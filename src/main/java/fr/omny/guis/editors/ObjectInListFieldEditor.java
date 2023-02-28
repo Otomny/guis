@@ -1,6 +1,5 @@
 package fr.omny.guis.editors;
 
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +34,8 @@ public class ObjectInListFieldEditor implements OFieldEditor {
 
 	@SuppressWarnings("unchecked")
 	public static Optional<ObjectInListProvider<Object>> findProvider(Class<?> type) {
-		return PROVIDERS.values().stream().filter(p -> p.type() == type).map(p -> (ObjectInListProvider<Object>) p).findFirst();
+		return PROVIDERS.values().stream().filter(p -> p.type() == type).map(p -> (ObjectInListProvider<Object>) p)
+				.findFirst();
 	}
 
 	public static ObjectInListProvider<?> instance(Class<? extends ObjectInListProvider<?>> list) {
@@ -89,10 +89,12 @@ public class ObjectInListFieldEditor implements OFieldEditor {
 		@SuppressWarnings("unchecked")
 		ObjectInListProvider<Object> provider = (ObjectInListProvider<Object>) optionalProvider.get();
 		Object selectedValue = ReflectionUtils.get(toEdit, field);
-		new GuiListBuilder<>(Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())), provider.provide()).page(page)
+		new GuiListBuilder<>(Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())),
+				provider.provide()).page(page)
 				.itemCreation(obj -> {
 					boolean selected = selectedValue == obj;
-					return new GuiItemBuilder().name((selected ? "§b" : "§e") + provider.asString(obj)).icon(selected ? Material.DIAMOND : fieldData.display())
+					return new GuiItemBuilder().name((selected ? "§b" : "§e") + provider.asString(obj))
+							.icon(selected ? Material.DIAMOND : fieldData.display())
 							.breakLine().description("§7§oValue: §e" + provider.asString(obj)).click((p, slot, click) -> {
 								try {
 									ReflectionUtils.set(toEdit, field, obj);
@@ -103,5 +105,10 @@ public class ObjectInListFieldEditor implements OFieldEditor {
 								return true;
 							});
 				}).pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose)).close(onClose).open(player);
+	}
+
+	@Override
+	public int priority() {
+		return 1;
 	}
 }

@@ -1,6 +1,5 @@
 package fr.omny.guis;
 
-
 import java.lang.reflect.Field;
 
 import org.bukkit.entity.Player;
@@ -19,14 +18,6 @@ public interface OFieldEditor {
 	boolean accept(Field field);
 
 	/**
-	 * 
-	 * @return If this editor allow null values by default
-	 */
-	default boolean allowNullValues(){
-		return false;
-	}
-
-	/**
 	 * @param player    The player to show inventory to
 	 * @param toEdit    The objet to edit
 	 * @param field     The field to edit
@@ -34,5 +25,22 @@ public interface OFieldEditor {
 	 * @param onClose   Task to execute when the player close the inventory
 	 */
 	void edit(Player player, Object toEdit, Field field, OField fieldData, Runnable onClose);
+
+	/**
+	 * Priority assigned to this editor
+	 * 
+	 * @return
+	 */
+	default int priority() {
+		return 100;
+	}
+
+	/**
+	 * 
+	 * @return If this editor allow null values by default
+	 */
+	default boolean allowNullValues() {
+		return false;
+	}
 
 }
