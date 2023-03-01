@@ -49,6 +49,8 @@ public class BooleanFieldEditor implements OFieldEditor {
 					}).build());
 
 			guiBuilder.item(9, GuiItem.back(onClose));
+			guiBuilder.build()
+					.open(player);
 		} catch (Exception e) {
 			e.printStackTrace();
 			onClose.run();
