@@ -113,6 +113,16 @@ public class GuiItemBuilder implements Cloneable {
 		return this;
 	}
 
+/**
+	 * 
+	 * @param condition
+	 * @param description
+	 * @return
+	 */
+	public GuiItemBuilder description(boolean condition, String... description) {
+		return description(condition, List.of(description));
+	}
+
 	/**
 	 * 
 	 * @param condition
