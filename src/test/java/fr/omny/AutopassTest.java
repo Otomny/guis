@@ -1,9 +1,8 @@
 package fr.omny;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Autopass test for GitHub actions
