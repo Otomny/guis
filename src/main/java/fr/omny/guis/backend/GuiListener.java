@@ -41,7 +41,7 @@ public class GuiListener implements Listener {
       event.setCancelled(true);
 
       // Check the name of the panel
-      if (view.getTitle().equals(
+      if (view.title().equals(
               openGuis.get(player.getUniqueId()).getName())) {
         // Close inventory if clicked outside and if setting is true
         if (event.getSlotType().equals(SlotType.OUTSIDE)) {

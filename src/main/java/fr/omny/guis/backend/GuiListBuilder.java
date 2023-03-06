@@ -83,7 +83,7 @@ public class GuiListBuilder<T> {
 
 			String toString = obj == null ? "null" : obj.toString();
 			return new GuiItemBuilder().icon(new ItemStack(Material.PAPER)).breakLine()
-					.description(toString);
+					.descriptionLegacy(toString);
 		});
 
 		int maxPageCount = (int) Math.floor(Double.valueOf(list.size()) / Double.valueOf(itemPageCount));

@@ -70,7 +70,7 @@ public class EnchantmentField implements Cloneable, Itemable, Updateable{
 		return new GuiItemBuilder()
 			.icon(Material.ENCHANTED_BOOK)
 			.name(this.enchantment == null ? "§cUndefined" : this.enchantment.getKey().getKey())
-			.description("§7§oLevel "+this.level);
+			.descriptionLegacy("§7§oLevel "+this.level);
 	}
 
 	@Override

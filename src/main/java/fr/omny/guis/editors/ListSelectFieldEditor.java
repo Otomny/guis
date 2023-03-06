@@ -52,7 +52,7 @@ public class ListSelectFieldEditor implements OFieldEditor {
 					boolean selected = listValue.contains(obj);
 					return new GuiItemBuilder().name((selected ? "§b" : "§e") + provider.asString(obj))
 							.icon(selected ? Material.DIAMOND : fieldData.display()).breakLine()
-							.description("§7§oValue: §e" + provider.asString(obj)).click((p, slot, click) -> {
+							.descriptionLegacy("§7§oValue: §e" + provider.asString(obj)).click((p, slot, click) -> {
 								try {
 									if (selected) {
 										listValue.remove(obj);

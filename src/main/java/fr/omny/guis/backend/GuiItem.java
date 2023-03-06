@@ -61,13 +61,12 @@ public class GuiItem {
 		// Apply display name
 		if (itemBuilder.getDisplayName() != null) {
 			applyMeta(itemMeta -> {
-				itemMeta.setDisplayName(Utils.replaceColor(itemBuilder.getDisplayName()));
-				itemMeta.setLocalizedName(Utils.replaceColor(itemBuilder.getDisplayName()));
+				itemMeta.displayName(itemBuilder.getDisplayName());
 			});
 		}
 		// Apply description
 		if (!itemBuilder.getDescription().isEmpty()) {
-			applyMeta(itemMeta -> itemMeta.setLore(Utils.replaceColor(itemBuilder.getDescription())));
+			applyMeta(itemMeta -> itemMeta.lore(itemBuilder.getDescription()));
 		}
 		// Apply hide enchants
 		if (itemBuilder.isHideEnchant() || itemBuilder.isGlow()) {

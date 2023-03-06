@@ -175,7 +175,7 @@ public class OGui {
 				plugin.getLogger().warning("No editors found for type " + field.getType() + " on field " + field.getName()
 						+ " of class " + this.toEditClass.getSimpleName());
 				guiBuilder.item(new GuiItemBuilder().icon(Material.BARRIER).name(fieldName)
-						.description("§cUnable to found editor for type " + field.getType()).build());
+						.descriptionLegacy("§cUnable to found editor for type " + field.getType()).build());
 				continue;
 			}
 			OFieldEditor editor = editors.size() == 1 ? editors.get(0)
@@ -186,8 +186,8 @@ public class OGui {
 
 			var guiItemBuilder = value instanceof Itemable item ? item.item(player) : new GuiItemBuilder();
 			guiBuilder.item(guiItemBuilder.name(fieldName).icon(data.display())
-					.description("§7§oValue: §e" + stringify(value, data.stringifier())).breakLine()
-					.description(data.description()).click(() -> {
+					.descriptionLegacy("§7§oValue: §e" + stringify(value, data.stringifier())).breakLine()
+					.descriptionLegacy(data.description()).click(() -> {
 						if (value == null && !editor.allowNullValues()) {
 							player.playSound(player, Sound.ENTITY_VILLAGER_NO, SoundCategory.PLAYERS, 1.0f, 0);
 							player.sendMessage("§cYou can't edit a null field, you must initialize it to a default value first.");
@@ -201,7 +201,7 @@ public class OGui {
 			var data = entry.getValue();
 			String methodName = Utils.replaceColor(Utils.orString(data.value(), "&e" + method.getName()));
 			guiBuilder.item(new GuiItemBuilder().name(methodName).icon(data.icon()).breakLine()
-					.description(data.description()).click(() -> {
+					.descriptionLegacy(data.description()).click(() -> {
 						method.setAccessible(true);
 						try {
 							ReflectionUtils.callWithInject(method, this.toEdit, player);

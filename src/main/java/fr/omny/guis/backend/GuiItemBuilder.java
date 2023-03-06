@@ -1,6 +1,5 @@
 package fr.omny.guis.backend;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +10,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import lombok.Getter;
-
+import net.kyori.adventure.text.Component;
 
 @Getter
 /**
@@ -21,15 +20,16 @@ public class GuiItemBuilder implements Cloneable {
 
 	private ItemStack display = new ItemStack(Material.STONE);
 	private OnClickHandler handler = (player, slot, click) -> true;
-	private List<String> description = new ArrayList<>();
-	private String displayName;
+	private List<Component> description = new ArrayList<>();
+	private Component displayName;
 	private boolean hideEnchant = false;
 	private boolean glow = false;
 
 	/**
 	 * 
 	 */
-	public GuiItemBuilder() {}
+	public GuiItemBuilder() {
+	}
 
 	private GuiItemBuilder(GuiItemBuilder guiItemBuilder) {
 		this.display = guiItemBuilder.display.clone();
@@ -79,9 +79,19 @@ public class GuiItemBuilder implements Cloneable {
 	/**
 	 * 
 	 * @param name
-	 * @return
+	 * @return this
 	 */
 	public GuiItemBuilder name(String name) {
+		this.displayName = Component.text(name);
+		return this;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @return this
+	 */
+	public GuiItemBuilder name(Component name) {
 		this.displayName = name;
 		return this;
 	}
@@ -91,7 +101,7 @@ public class GuiItemBuilder implements Cloneable {
 	 * @return
 	 */
 	public GuiItemBuilder breakLine() {
-		return description("");
+		return description(Component.empty());
 	}
 
 	/**
@@ -99,7 +109,47 @@ public class GuiItemBuilder implements Cloneable {
 	 * @param description
 	 * @return
 	 */
-	public GuiItemBuilder description(String... description) {
+	public GuiItemBuilder descriptionLegacy(String... description) {
+		return descriptionLegacy(List.of(description));
+	}
+
+	/**
+	 * 
+	 * @param description
+	 * @return
+	 */
+	public GuiItemBuilder descriptionLegacy(List<String> description) {
+		return descriptionLegacy(true, description);
+	}
+
+	/**
+	 * 
+	 * @param condition
+	 * @param description
+	 * @return
+	 */
+	public GuiItemBuilder descriptionLegacy(boolean condition, String... description) {
+		return descriptionLegacy(condition, List.of(description));
+	}
+
+	/**
+	 * 
+	 * @param condition
+	 * @param description
+	 * @return
+	 */
+	public GuiItemBuilder descriptionLegacy(boolean condition, List<String> description) {
+		if (condition)
+			this.description.addAll(description.stream().map(Component::text).toList());
+		return this;
+	}
+
+	/**
+	 * 
+	 * @param description
+	 * @return
+	 */
+	public GuiItemBuilder description(Component... description) {
 		return description(List.of(description));
 	}
 
@@ -108,18 +158,18 @@ public class GuiItemBuilder implements Cloneable {
 	 * @param description
 	 * @return
 	 */
-	public GuiItemBuilder description(List<String> description) {
+	public GuiItemBuilder description(List<Component> description) {
 		this.description.addAll(description);
 		return this;
 	}
 
-/**
+	/**
 	 * 
 	 * @param condition
 	 * @param description
 	 * @return
 	 */
-	public GuiItemBuilder description(boolean condition, String... description) {
+	public GuiItemBuilder description(boolean condition, Component... description) {
 		return description(condition, List.of(description));
 	}
 
@@ -129,7 +179,7 @@ public class GuiItemBuilder implements Cloneable {
 	 * @param description
 	 * @return
 	 */
-	public GuiItemBuilder description(boolean condition, List<String> description) {
+	public GuiItemBuilder description(boolean condition, List<Component> description) {
 		if (condition)
 			this.description.addAll(description);
 		return this;

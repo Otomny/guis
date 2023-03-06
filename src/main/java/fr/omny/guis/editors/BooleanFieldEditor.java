@@ -33,7 +33,7 @@ public class BooleanFieldEditor implements OFieldEditor {
 					.icon(value ? Material.LIME_CONCRETE : Material.RED_CONCRETE)
 					.name("§7Value: " + (value ? "§aTrue" : "§cFalse"))
 					.breakLine()
-					.description("§7Click to set value to " + (value ? "§cFalse" : "§aTrue"))
+					.descriptionLegacy("§7Click to set value to " + (value ? "§cFalse" : "§aTrue"))
 					.click(() -> {
 						try {
 							field.setBoolean(toEdit, !value);

@@ -95,7 +95,7 @@ public class ObjectInListFieldEditor implements OFieldEditor {
 					boolean selected = selectedValue == obj;
 					return new GuiItemBuilder().name((selected ? "§b" : "§e") + provider.asString(obj))
 							.icon(selected ? Material.DIAMOND : fieldData.display())
-							.breakLine().description("§7§oValue: §e" + provider.asString(obj)).click((p, slot, click) -> {
+							.breakLine().descriptionLegacy("§7§oValue: §e" + provider.asString(obj)).click((p, slot, click) -> {
 								try {
 									ReflectionUtils.set(toEdit, field, obj);
 								} catch (Exception e) {

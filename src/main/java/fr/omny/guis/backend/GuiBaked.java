@@ -3,6 +3,9 @@ package fr.omny.guis.backend;
 import org.bukkit.Material;
 import org.bukkit.util.Consumer;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 public class GuiBaked {
 
 	/**
@@ -28,7 +31,7 @@ public class GuiBaked {
 	 */
 	public static <E extends Enum<E>> GuiBuilder selectEnum(Class<? extends E> enumClass, Runnable onCancel,
 			Consumer<E> callback) {
-		GuiBuilder guiBuilder = new GuiBuilder(enumClass.getSimpleName())
+		GuiBuilder guiBuilder = new GuiBuilder(Component.text(enumClass.getSimpleName(), NamedTextColor.GOLD))
 				.fillSide(Material.LIME_STAINED_GLASS_PANE)
 				.rows(5);
 		for (E value : enumClass.getEnumConstants()) {
@@ -36,7 +39,7 @@ public class GuiBaked {
 					.icon(Material.BOOK)
 					.name(value.toString())
 					.breakLine()
-					.description("§7Click here to select")
+					.descriptionLegacy("§7Click here to select")
 					.click(() -> callback.accept(value))
 					.build());
 		}

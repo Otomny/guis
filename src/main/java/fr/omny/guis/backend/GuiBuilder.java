@@ -1,6 +1,5 @@
 package fr.omny.guis.backend;
 
-
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -11,6 +10,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
 @Getter
 public class GuiBuilder {
@@ -21,13 +21,20 @@ public class GuiBuilder {
 	private boolean fillSide = false;
 	private ItemStack fillSideItem = new ItemStack(Material.STONE);
 	private SortedMap<Integer, GuiItem> items = new TreeMap<>();
-	private String title;
+	private Component title;
 	private InventoryHandler handler;
 
 	/**
 	 * @param title The title of the inventory
 	 */
 	public GuiBuilder(String title) {
+		this(Component.text(title));
+	}
+
+	/**
+	 * @param title The title of the inventory
+	 */
+	public GuiBuilder(Component title) {
 		this.title = title;
 	}
 

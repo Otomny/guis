@@ -52,7 +52,7 @@ public class ListFieldEditor implements OFieldEditor {
 								.page(page)
 								.itemCreation(obj -> new GuiItemBuilder().name("§e" + klass.getSimpleName())
 										.icon(fieldData.display()).breakLine()
-										.description("§7§oValue: §e" + ReflectionUtils.string(obj))
+										.descriptionLegacy("§7§oValue: §e" + ReflectionUtils.string(obj))
 										.click((p, slot, click) -> {
 											OGui.open(player, obj,
 													() -> edit(page, player, toEdit, field, fieldData, onClose));
@@ -64,7 +64,7 @@ public class ListFieldEditor implements OFieldEditor {
 				if (listOperations.contains(ListOperation.ADD)) {
 					guiBuilder.items(GuiListBuilder::isLastPage,
 							new GuiItemBuilder().name("§aAdd item").icon(Material.LIME_CONCRETE)
-									.description("", "§7Click here to add an item").click((z, slot, click) -> {
+									.descriptionLegacy("", "§7Click here to add an item").click((z, slot, click) -> {
 										try {
 											final Object createdElement = klass.getConstructor().newInstance();
 

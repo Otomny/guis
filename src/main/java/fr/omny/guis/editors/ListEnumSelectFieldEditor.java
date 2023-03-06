@@ -43,7 +43,7 @@ public class ListEnumSelectFieldEditor implements OFieldEditor {
 			var guiBuilder = new GuiListBuilder<>(Utils.replaceColor(Utils.orString(fieldData.value(), "&7" + field.getName())), enumValues).page(page).itemCreation(obj -> {
 				boolean contains = selected.contains(obj);
 				return new GuiItemBuilder().icon(contains ? Material.DIAMOND : Material.NAME_TAG).name((contains ? "§b" : "§7") + obj.toString()).breakLine()
-						.description("§7- Right click to add", "§7- Left click to remove").click((p, slot, click) -> {
+						.descriptionLegacy("§7- Right click to add", "§7- Left click to remove").click((p, slot, click) -> {
 							if (click == ClickType.LEFT) {
 								if (contains) {
 									selected.remove(obj);

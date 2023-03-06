@@ -13,12 +13,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
 @Getter
 public class Gui {
 
 	private Inventory inventory;
-	private String name;
+	private Component name;
 	private SortedMap<Integer, GuiItem> items = new TreeMap<>();
 	private Optional<GuiBuilder.InventoryHandler> handler;
 	private ItemStack fillSideItem;
