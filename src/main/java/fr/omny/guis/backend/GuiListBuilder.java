@@ -1,6 +1,5 @@
 package fr.omny.guis.backend;
 
-
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -17,6 +16,7 @@ import com.google.common.base.Predicates;
 
 import fr.omny.guis.attributes.Itemable;
 import fr.omny.guis.utils.Utils.Tuple2;
+import net.kyori.adventure.text.Component;
 
 public class GuiListBuilder<T> {
 
@@ -31,11 +31,22 @@ public class GuiListBuilder<T> {
 	private Optional<Runnable> onClose = Optional.empty();
 	private SortedMap<Integer, Tuple2<GuiItem, Predicate<GuiListState>>> items = new TreeMap<>();
 	private List<T> list;
-	private String name;
+	private Component name;
 
 	public GuiListBuilder(String name, List<T> list) {
+		this(Component.text(name), list);
+	}
+
+	public GuiListBuilder(Component name, List<T> list) {
 		this.name = name;
 		this.list = list;
+	}
+
+	public GuiListBuilder<T> rows(int rows) {
+		if (rows > GuiBuilder.MAX_ROWS)
+			throw new IllegalArgumentException("Row count cannot exceed 7");
+		this.rowsPerPage = rows;
+		return this;
 	}
 
 	public GuiListBuilder<T> page(int page) {
@@ -75,7 +86,8 @@ public class GuiListBuilder<T> {
 		return this;
 	}
 
-	public record GuiListState(int page, int maxPage) {}
+	public record GuiListState(int page, int maxPage) {
+	}
 
 	public void open(Player player) {
 		int itemPageCount = this.rowsPerPage * 7;

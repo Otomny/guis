@@ -1,8 +1,8 @@
 package fr.omny.guis.editors;
 
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,22 +26,29 @@ public class StringFieldEditor implements OFieldEditor {
 
 	@Override
 	public void edit(Player player, Object toEdit, Field field, OField fieldData, Runnable onClose) {
-		new AnvilGUI.Builder().onClose(p -> {
-			Bukkit.getScheduler().runTask(OGui.getPlugin(), onClose);
-		}).onComplete((completion) -> {
-			try {
-				ReflectionUtils.access(field, () -> {
-					field.set(toEdit, completion.getText());
-					if (toEdit instanceof Updateable updateable) {
-						updateable.fieldUpdate(field);
-					}
-				});
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return Arrays.asList(AnvilGUI.ResponseAction.close());
-		}).text("Editing " + field.getName()).itemLeft(new ItemStack(Material.PAPER))
-				.plugin(OGui.getPlugin()).open(player);
+		try {
+			field.setAccessible(true);
+			String currentValue = (String) field.get(toEdit);
+			new AnvilGUI.Builder().onClose(p -> {
+				Bukkit.getScheduler().runTask(OGui.getPlugin(), onClose);
+			}).onComplete((completion) -> {
+				try {
+					ReflectionUtils.access(field, () -> {
+						field.set(toEdit, completion.getText());
+						if (toEdit instanceof Updateable updateable) {
+							updateable.fieldUpdate(field);
+						}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return Arrays.asList(AnvilGUI.ResponseAction.close());
+			}).text(Optional.ofNullable(currentValue).orElse("Editing " + field.getName()))
+					.itemLeft(new ItemStack(Material.PAPER))
+					.plugin(OGui.getPlugin()).open(player);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

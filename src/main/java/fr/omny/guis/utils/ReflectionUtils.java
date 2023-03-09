@@ -1,6 +1,5 @@
 package fr.omny.guis.utils;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,6 +11,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+
+import fr.omny.guis.utils.Utils.Tuple2;
 
 public class ReflectionUtils {
 
@@ -100,6 +101,18 @@ public class ReflectionUtils {
 	}
 
 	/**
+	 * Get the key value type in the map field
+	 * 
+	 * @param field The field
+	 * @return The types of the map
+	 */
+	public static Tuple2<Class<?>, Class<?>> getKeyValueOfMapField(Field field) {
+		return new Tuple2<Class<?>, Class<?>>(
+				(Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0],
+				(Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[1]);
+	}
+
+	/**
 	 * Helper function to edit field, and eliminate boiler plate of set accessible
 	 * 
 	 * @param field
@@ -139,7 +152,7 @@ public class ReflectionUtils {
 				parameters[index] = iParam;
 			}
 		}
-		
+
 		method.invoke(instance, parameters);
 	}
 
