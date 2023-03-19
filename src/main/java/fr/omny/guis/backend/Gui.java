@@ -1,6 +1,5 @@
 package fr.omny.guis.backend;
 
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class Gui {
 		this.handler = Optional.ofNullable(guiBuilder.getHandler());
 		this.name = guiBuilder.getTitle();
 		this.items = guiBuilder.getItems();
-		this.size = guiBuilder.getRows() * 7;
+		this.size = guiBuilder.getRows() * 9;
 		this.fillSide = guiBuilder.isFillSide();
 		this.fillSideItem = guiBuilder.getFillSideItem();
 		init();
@@ -50,14 +49,13 @@ public class Gui {
 	}
 
 	private void init() {
-
 		this.inventory = Bukkit.createInventory(null, fixSize(this.size), this.name);
 		if (this.fillSide) {
 			fillOnSide();
 		}
 		// Fill the inventory and return
 		for (Map.Entry<Integer, GuiItem> en : this.items.entrySet()) {
-			if (en.getKey() < 54) {
+			if (en.getKey() < Math.min(54, this.inventory.getSize())) {
 				inventory.setItem(en.getKey(), en.getValue().getDisplay());
 				// // Get player head in async
 				// if (en.getValue().isPlayerHead()) {

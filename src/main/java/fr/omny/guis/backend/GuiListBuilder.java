@@ -1,5 +1,7 @@
 package fr.omny.guis.backend;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -14,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.google.common.base.Predicates;
 
-import fr.omny.guis.attributes.Itemable;
 import fr.omny.guis.utils.Utils.Tuple2;
 import net.kyori.adventure.text.Component;
 
@@ -30,14 +31,14 @@ public class GuiListBuilder<T> {
 	private Optional<Function<T, GuiItemBuilder>> itemCreator = Optional.empty();
 	private Optional<Runnable> onClose = Optional.empty();
 	private SortedMap<Integer, Tuple2<GuiItem, Predicate<GuiListState>>> items = new TreeMap<>();
-	private List<T> list;
+	private Collection<T> list;
 	private Component name;
 
-	public GuiListBuilder(String name, List<T> list) {
+	public GuiListBuilder(String name, Collection<T> list) {
 		this(Component.text(name), list);
 	}
 
-	public GuiListBuilder(Component name, List<T> list) {
+	public GuiListBuilder(Component name, Collection<T> list) {
 		this.name = name;
 		this.list = list;
 	}
@@ -91,6 +92,7 @@ public class GuiListBuilder<T> {
 
 	public void open(Player player) {
 		int itemPageCount = this.rowsPerPage * 7;
+		List<T> wrapped = new ArrayList<>(this.list);
 		Function<T, GuiItemBuilder> generator = this.itemCreator.orElse(obj -> {
 
 			String toString = obj == null ? "null" : obj.toString();
@@ -112,10 +114,9 @@ public class GuiListBuilder<T> {
 
 		for (int i = startPage; i < endPage; i++) {
 			final int index = i;
-			var objectAt = list.get(index);
+			var objectAt = wrapped.get(index);
 
-			GuiItemBuilder guiItemBuilder = objectAt instanceof Itemable item ? item.item(player)
-					: generator.apply(objectAt);
+			GuiItemBuilder guiItemBuilder = generator.apply(objectAt);
 
 			guiBuilder.item(guiItemBuilder.build());
 		}
