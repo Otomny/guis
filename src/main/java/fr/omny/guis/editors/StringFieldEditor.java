@@ -14,9 +14,9 @@ import fr.omny.guis.OFieldEditor;
 import fr.omny.guis.OGui;
 import fr.omny.guis.attributes.Updateable;
 import fr.omny.guis.utils.ReflectionUtils;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.wesjd.anvilgui.AnvilGUI;
 
-@OMainEditor
 public class StringFieldEditor implements OFieldEditor {
 
 	@Override
@@ -34,7 +34,9 @@ public class StringFieldEditor implements OFieldEditor {
 			}).onComplete((completion) -> {
 				try {
 					ReflectionUtils.access(field, () -> {
-						field.set(toEdit, completion.getText());
+						String text = MiniMessage.builder().build()
+								.serialize(completion.getOutputItem().getItemMeta().displayName());
+						field.set(toEdit, text);
 						if (toEdit instanceof Updateable updateable) {
 							updateable.fieldUpdate(field);
 						}
