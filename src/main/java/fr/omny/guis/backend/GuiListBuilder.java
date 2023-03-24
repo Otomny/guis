@@ -44,8 +44,8 @@ public class GuiListBuilder<T> {
 	}
 
 	public GuiListBuilder<T> rows(int rows) {
-		if (rows > GuiBuilder.MAX_ROWS)
-			throw new IllegalArgumentException("Row count cannot exceed 7");
+		if (rows + 2 > GuiBuilder.MAX_ROWS)
+			throw new IllegalArgumentException("Row count cannot exceed " + (GuiBuilder.MAX_ROWS - 2) + "");
 		this.rowsPerPage = rows;
 		return this;
 	}
@@ -109,7 +109,7 @@ public class GuiListBuilder<T> {
 		int startPage = page * itemPageCount;
 		int endPage = Math.min(list.size(), (page + 1) * itemPageCount);
 
-		GuiBuilder guiBuilder = new GuiBuilder(this.name).rows(5)
+		GuiBuilder guiBuilder = new GuiBuilder(this.name).rows(this.rowsPerPage + 2)
 				.fillSide(new ItemStack(Material.ORANGE_STAINED_GLASS_PANE));
 
 		for (int i = startPage; i < endPage; i++) {
