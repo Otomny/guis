@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -28,7 +29,7 @@ public class GuiListBuilder<T> {
 	private int page = 0;
 	private int rowsPerPage = 3;
 	private Optional<Consumer<Integer>> pageChange = Optional.empty();
-	private Optional<Function<T, GuiItemBuilder>> itemCreator = Optional.empty();
+	private Optional<BiFunction<T, Integer, GuiItemBuilder>> itemCreator = Optional.empty();
 	private Optional<Runnable> onClose = Optional.empty();
 	private SortedMap<Integer, Tuple2<GuiItem, Predicate<GuiListState>>> items = new TreeMap<>();
 	private Collection<T> list;
@@ -61,6 +62,11 @@ public class GuiListBuilder<T> {
 	}
 
 	public GuiListBuilder<T> itemCreation(Function<T, GuiItemBuilder> itemCreator) {
+		this.itemCreator = Optional.of((data, index) -> itemCreator.apply(data));
+		return this;
+	}
+
+	public GuiListBuilder<T> itemCreation(BiFunction<T, Integer, GuiItemBuilder> itemCreator) {
 		this.itemCreator = Optional.of(itemCreator);
 		return this;
 	}
@@ -90,10 +96,10 @@ public class GuiListBuilder<T> {
 	public record GuiListState(int page, int maxPage) {
 	}
 
-	public void open(Player player) {
+	public Gui build() {
 		int itemPageCount = this.rowsPerPage * 7;
 		List<T> wrapped = new ArrayList<>(this.list);
-		Function<T, GuiItemBuilder> generator = this.itemCreator.orElse(obj -> {
+		BiFunction<T, Integer, GuiItemBuilder> generator = this.itemCreator.orElse((obj, index) -> {
 
 			String toString = obj == null ? "null" : obj.toString();
 			return new GuiItemBuilder().icon(new ItemStack(Material.PAPER)).breakLine()
@@ -116,7 +122,7 @@ public class GuiListBuilder<T> {
 			final int index = i;
 			var objectAt = wrapped.get(index);
 
-			GuiItemBuilder guiItemBuilder = generator.apply(objectAt);
+			GuiItemBuilder guiItemBuilder = generator.apply(objectAt, i);
 
 			guiBuilder.item(guiItemBuilder.build());
 		}
@@ -145,8 +151,11 @@ public class GuiListBuilder<T> {
 		}
 
 		guiBuilder.item(9, GuiItem.back(onClose));
+		return guiBuilder.build();
+	}
 
-		guiBuilder.open(player);
+	public void open(Player player) {
+		build().open(player);
 	}
 
 }
