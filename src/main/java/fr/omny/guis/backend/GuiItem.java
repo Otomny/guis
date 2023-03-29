@@ -1,6 +1,7 @@
 package fr.omny.guis.backend;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.bukkit.Material;
@@ -43,11 +44,19 @@ public class GuiItem {
 
 	private ItemStack display;
 	private Optional<GuiItemBuilder.OnClickHandler> handler = Optional.empty();
+	private boolean playerHead;
+	private boolean hideEnchant;
+	private boolean glow;
+	private Optional<String> playerHeadName = Optional.empty();
+	private Optional<UUID> playerHeadId = Optional.empty();
 
 	protected GuiItem(GuiItemBuilder itemBuilder) {
 		this.handler = Optional.of(itemBuilder.getHandler());
 		// build item
 		this.display = itemBuilder.getDisplay();
+    this.playerHead = itemBuilder.isPlayerHead();
+		this.playerHeadName = itemBuilder.getPlayerHeadName();
+		this.playerHeadId = itemBuilder.getPlayerHeadId();
 
 		ItemMeta itemMeta = this.display.getItemMeta();
 
@@ -82,4 +91,20 @@ public class GuiItem {
 			this.display.setItemMeta(meta);
 		}
 	}
+
+	public void setHead(ItemStack itemStack) {
+    this.display = itemStack;
+    // Get the meta
+    var meta = display.getItemMeta();
+    if (meta != null) {
+      // Set flags to neaten up the view
+      meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+      meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+      meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+      if (this.hideEnchant || this.glow) {
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+      }
+      display.setItemMeta(meta);
+    }
+  }
 }

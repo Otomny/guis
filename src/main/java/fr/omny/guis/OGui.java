@@ -22,6 +22,7 @@ import fr.omny.guis.backend.GuiBuilder;
 import fr.omny.guis.backend.GuiItem;
 import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListener;
+import fr.omny.guis.backend.head.HeadFetcher;
 import fr.omny.guis.editors.AutomaticFieldEditor;
 import fr.omny.guis.editors.BooleanFieldEditor;
 import fr.omny.guis.editors.DoubleFieldEditor;
@@ -48,6 +49,8 @@ public class OGui {
 
 	@Getter
 	private static Plugin plugin;
+
+	private static HeadFetcher headFetcher;
 
 	private static final List<OFieldEditor> EDITORS = new ArrayList<>();
 
@@ -77,15 +80,21 @@ public class OGui {
 			throw new IllegalStateException(String.format("OGui registered method called twice (passed %s, registered %s)",
 					plugin.getName(), OGui.plugin.getName()));
 		}
-		OGui.plugin = plugin;
+		try {
+			OGui.plugin = plugin;
 
-		Bukkit.getPluginManager().registerEvents(new GuiListener(), plugin);
+			Bukkit.getPluginManager().registerEvents(new GuiListener(), plugin);
+			headFetcher = new HeadFetcher(plugin);
 
-		plugin.getLogger().info("OGui loaded successfuly !");
-		register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(), new ListFieldEditor(),
-				new EnumFieldEditor(), new ListEnumSelectFieldEditor(), new OClassFieldEditor(),
-				new MaterialFieldEditor(), new ObjectInListFieldEditor(), new ListSelectFieldEditor(),
-				new LocationFieldEditor(), new BooleanFieldEditor());
+			plugin.getLogger().info("OGui loaded successfuly !");
+			register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(), new ListFieldEditor(),
+					new EnumFieldEditor(), new ListEnumSelectFieldEditor(), new OClassFieldEditor(),
+					new MaterialFieldEditor(), new ObjectInListFieldEditor(), new ListSelectFieldEditor(),
+					new LocationFieldEditor(), new BooleanFieldEditor());
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE, "Error while loading OGui", e);
+		}
+
 	}
 
 	/**

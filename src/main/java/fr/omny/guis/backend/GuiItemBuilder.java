@@ -3,6 +3,7 @@ package fr.omny.guis.backend;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,6 +26,10 @@ public class GuiItemBuilder implements Cloneable {
 	private boolean hideEnchant = false;
 	private boolean glow = false;
 
+	private Optional<String> playerHeadName = Optional.empty();
+	private Optional<UUID> playerHeadId = Optional.empty();
+	private boolean playerHead = false;
+
 	/**
 	 * 
 	 */
@@ -45,6 +50,30 @@ public class GuiItemBuilder implements Cloneable {
 		this.display = new ItemStack(type);
 		return this;
 	}
+
+	/**
+	 * 
+	 * @param playerName
+	 * @return
+	 */
+	public GuiItemBuilder icon(String playerName) {
+		this.playerHeadName = Optional.of(playerName);
+		this.playerHead = true;
+		this.display = new ItemStack(Material.PLAYER_HEAD, 1);
+		return this;
+	}
+
+	/**
+	 * 
+	 * @param playerId
+	 * @return
+	 */
+	// public GuiItemBuilder icon(UUID playerId) {
+	// 	this.playerHead = true;
+	// 	this.playerHeadId = Optional.of(playerId);
+	// 	this.display = new ItemStack(Material.PLAYER_HEAD, 1);
+	// 	return this;
+	// }
 
 	/**
 	 * 

@@ -1,6 +1,5 @@
 package fr.omny.guis.editors;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -55,7 +54,12 @@ public class ListFieldEditor implements OFieldEditor {
 										.descriptionLegacy("§7§oValue: §e" + ReflectionUtils.string(obj))
 										.click((p, slot, click) -> {
 											OGui.open(player, obj,
-													() -> edit(page, player, toEdit, field, fieldData, onClose));
+													() -> {
+														if(obj instanceof Updateable updateable){
+															updateable.update();
+														}
+														edit(page, player, toEdit, field, fieldData, onClose);
+													});
 											return true;
 										}))
 								.pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose))
