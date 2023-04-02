@@ -50,8 +50,6 @@ public class OGui {
 	@Getter
 	private static Plugin plugin;
 
-	private static HeadFetcher headFetcher;
-
 	private static final List<OFieldEditor> EDITORS = new ArrayList<>();
 
 	private static final Map<Class<? extends Stringifier>, Stringifier> STRINGIFIERS = new HashMap<>();
@@ -84,7 +82,7 @@ public class OGui {
 			OGui.plugin = plugin;
 
 			Bukkit.getPluginManager().registerEvents(new GuiListener(), plugin);
-			headFetcher = new HeadFetcher(plugin);
+			new HeadFetcher(plugin);
 
 			plugin.getLogger().info("OGui loaded successfuly !");
 			register(new IntegerFieldEditor(), new DoubleFieldEditor(), new StringFieldEditor(), new ListFieldEditor(),

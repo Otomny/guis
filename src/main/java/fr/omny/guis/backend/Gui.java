@@ -9,13 +9,16 @@ import java.util.TreeMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import fr.omny.guis.backend.head.GuiHeadFetcher;
+import fr.omny.guis.backend.head.HeadFetcher;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 @Getter
-public class Gui {
+public class Gui implements InventoryHolder, GuiHeadFetcher {
 
 	private Inventory inventory;
 	private Component name;
@@ -58,9 +61,9 @@ public class Gui {
 			if (en.getKey() < Math.min(54, this.inventory.getSize())) {
 				inventory.setItem(en.getKey(), en.getValue().getDisplay());
 				// // Get player head in async
-				// if (en.getValue().isPlayerHead()) {
-				// HeadGetter.getHead(en.getValue(), this);
-				// }
+				if (en.getValue().isPlayerHead()) {
+					HeadFetcher.getHead(en.getValue(), this);
+				}
 			}
 		}
 	}
@@ -108,6 +111,22 @@ public class Gui {
 			return 9;
 		}
 		return size;
+	}
+
+	@Override
+	public void setHead(GuiItem item) {
+		// Update the panel item
+		// Find panel item index in items and replace it once more
+		// in inventory to
+		// update it.
+		this.items.entrySet().stream()
+				.filter(entry -> entry.getValue() == item)
+				.mapToInt(Map.Entry::getKey).findFirst()
+				.ifPresent(index ->
+				// Update item inside inventory to change icon only if
+				// item is inside panel.
+				this.inventory.setItem(index, item.getDisplay()));
+
 	}
 
 }

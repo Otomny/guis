@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 @Getter
 /**
@@ -69,10 +70,10 @@ public class GuiItemBuilder implements Cloneable {
 	 * @return
 	 */
 	// public GuiItemBuilder icon(UUID playerId) {
-	// 	this.playerHead = true;
-	// 	this.playerHeadId = Optional.of(playerId);
-	// 	this.display = new ItemStack(Material.PLAYER_HEAD, 1);
-	// 	return this;
+	// this.playerHead = true;
+	// this.playerHeadId = Optional.of(playerId);
+	// this.display = new ItemStack(Material.PLAYER_HEAD, 1);
+	// return this;
 	// }
 
 	/**
@@ -180,6 +181,26 @@ public class GuiItemBuilder implements Cloneable {
 	 */
 	public GuiItemBuilder description(Component... description) {
 		return description(List.of(description));
+	}
+
+	/**
+	 * 
+	 * @param mm
+	 * @param descriptions
+	 * @return
+	 */
+	public GuiItemBuilder description(MiniMessage mm, String... descriptions) {
+		return description(mm, List.of(descriptions));
+	}
+
+	/**
+	 * 
+	 * @param mm
+	 * @param descriptions
+	 * @return
+	 */
+	public GuiItemBuilder description(MiniMessage mm, List<String> descriptions) {
+		return description(descriptions.stream().map(mm::deserialize).toList());
 	}
 
 	/**
