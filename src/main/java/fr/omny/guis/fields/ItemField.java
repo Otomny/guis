@@ -14,6 +14,7 @@ import fr.omny.guis.OClass;
 import fr.omny.guis.OField;
 import fr.omny.guis.attributes.Itemable;
 import fr.omny.guis.backend.GuiItemBuilder;
+import fr.omny.guis.events.ItemFieldCreateEvent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -85,6 +86,7 @@ public class ItemField implements Itemable, Cloneable {
 	public ItemStack asItem() {
 		var item = new ItemStack(type, quantity);
 		this.enchantments.forEach(e -> e.applyEnchantment(item));
+		new ItemFieldCreateEvent(false, this, item).callEvent();
 		return item;
 	}
 
