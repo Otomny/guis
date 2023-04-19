@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -61,6 +62,16 @@ public class OGui {
 	 */
 	public static void register(OFieldEditor... editors) {
 		EDITORS.addAll(List.of(editors));
+	}
+
+	/**
+	 * Find editor with the class of the editor
+	 * 
+	 * @param klass The class of the editor
+	 * @return Possibly the editor, empty if not found
+	 */
+	public static Optional<OFieldEditor> getEditor(Class<? extends OFieldEditor> klass) {
+		return EDITORS.stream().filter(e -> e.getClass().equals(klass)).findFirst();
 	}
 
 	/**
