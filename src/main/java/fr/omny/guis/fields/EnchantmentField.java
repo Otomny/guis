@@ -76,7 +76,7 @@ public class EnchantmentField implements Cloneable, Itemable, Updateable{
 	@Override
 	public void fieldUpdate(Field field) {
 		if(field.getName().equalsIgnoreCase("level")){
-			this.level = Math.min(level, 1);
+			this.level = Math.max(level, 1);
 		}
 	}
 
