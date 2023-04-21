@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -54,7 +55,7 @@ public class GuiItem {
 		this.handler = Optional.of(itemBuilder.getHandler());
 		// build item
 		this.display = itemBuilder.getDisplay();
-    this.playerHead = itemBuilder.isPlayerHead();
+		this.playerHead = itemBuilder.isPlayerHead();
 		this.playerHeadName = itemBuilder.getPlayerHeadName();
 		this.playerHeadId = itemBuilder.getPlayerHeadId();
 
@@ -93,18 +94,22 @@ public class GuiItem {
 	}
 
 	public void setHead(ItemStack itemStack) {
-    this.display = itemStack;
-    // Get the meta
-    var meta = display.getItemMeta();
-    if (meta != null) {
-      // Set flags to neaten up the view
-      meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-      meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-      meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-      if (this.hideEnchant || this.glow) {
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-      }
-      display.setItemMeta(meta);
-    }
-  }
+		// this.display = itemStack;
+		// // Get the meta
+		// var meta = display.getItemMeta();
+		// if (meta != null) {
+		// // Set flags to neaten up the view
+		// meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		// meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+		// meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+		// if (this.hideEnchant || this.glow) {
+		// meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		// }
+		// display.setItemMeta(meta);
+		// }
+		SkullMeta providedSkullMeta = (SkullMeta) itemStack.getItemMeta();
+		SkullMeta skullMeta = (SkullMeta) this.display.getItemMeta();
+		skullMeta.setPlayerProfile(providedSkullMeta.getPlayerProfile());
+		this.display.setItemMeta(skullMeta);
+	}
 }
