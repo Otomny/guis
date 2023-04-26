@@ -8,7 +8,6 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
     maven {
         url = uri('https://repo.papermc.io/repository/maven-public/')
     }
@@ -58,7 +57,7 @@ dependencies {
 }
 
 group = 'fr.omny'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 description = 'guis'
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
