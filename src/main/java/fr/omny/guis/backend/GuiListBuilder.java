@@ -19,6 +19,7 @@ import com.google.common.base.Predicates;
 
 import fr.omny.guis.utils.Utils.Tuple2;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class GuiListBuilder<T> {
 
@@ -34,9 +35,14 @@ public class GuiListBuilder<T> {
 	private SortedMap<Integer, Tuple2<GuiItem, Predicate<GuiListState>>> items = new TreeMap<>();
 	private Collection<T> list;
 	private Component name;
+	private int[] allowedSlots;
 
 	public GuiListBuilder(String name, Collection<T> list) {
 		this(Component.text(name), list);
+	}
+
+	public GuiListBuilder(MiniMessage mm, String name, Collection<T> list) {
+		this(mm.deserialize(name), list);
 	}
 
 	public GuiListBuilder(Component name, Collection<T> list) {
@@ -93,6 +99,11 @@ public class GuiListBuilder<T> {
 		return this;
 	}
 
+	public GuiListBuilder<T> allowedSlots(int[] allowedSlots) {
+		this.allowedSlots = allowedSlots;
+		return this;
+	}
+
 	public record GuiListState(int page, int maxPage) {
 	}
 
@@ -123,8 +134,13 @@ public class GuiListBuilder<T> {
 			var objectAt = wrapped.get(index);
 
 			GuiItemBuilder guiItemBuilder = generator.apply(objectAt, i);
-
-			guiBuilder.item(guiItemBuilder.build());
+			if (allowedSlots != null) {
+				if(allowedSlots.length > i - startPage){
+					guiBuilder.item(allowedSlots[i - startPage], guiItemBuilder.build());
+				}
+			} else {
+				guiBuilder.item(guiItemBuilder.build());
+			}
 		}
 
 		var guiState = new GuiListState(page, maxPageCount);
