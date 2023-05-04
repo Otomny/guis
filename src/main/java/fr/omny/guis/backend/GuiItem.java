@@ -81,6 +81,11 @@ public class GuiItem {
 			itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		}
 
+		// Apply enchantments
+		for (var enchantment : itemBuilder.getEnchantments().entrySet()) {
+			this.display.addUnsafeEnchantment(enchantment.getKey(), enchantment.getValue());
+		}
+
 		this.display.setItemMeta(itemMeta);
 
 	}

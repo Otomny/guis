@@ -1,11 +1,14 @@
 package fr.omny.guis.backend;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +29,7 @@ public class GuiItemBuilder implements Cloneable {
 	private Component displayName;
 	private boolean hideEnchant = false;
 	private boolean glow = false;
-
+	private Map<Enchantment, Integer> enchantments = new HashMap<>();
 	private Optional<String> playerHeadName = Optional.empty();
 	private Optional<UUID> playerHeadId = Optional.empty();
 	private boolean playerHead = false;
@@ -83,6 +86,9 @@ public class GuiItemBuilder implements Cloneable {
 	 */
 	public GuiItemBuilder glow(boolean glow) {
 		this.glow = glow;
+		if (glow) {
+			enchantment(Enchantment.DURABILITY, 1);
+		}
 		return this;
 	}
 
@@ -107,8 +113,9 @@ public class GuiItemBuilder implements Cloneable {
 	}
 
 	/**
+	 * Set name of the item
 	 * 
-	 * @param name
+	 * @param name name of the item
 	 * @return this
 	 */
 	public GuiItemBuilder name(String name) {
@@ -117,8 +124,20 @@ public class GuiItemBuilder implements Cloneable {
 	}
 
 	/**
+	 * Set the name of the item
 	 * 
-	 * @param name
+	 * @param mm   MiniMessage instance
+	 * @param name name of the item
+	 * @return this
+	 */
+	public GuiItemBuilder name(MiniMessage mm, String name) {
+		return name(mm.deserialize(name));
+	}
+
+	/**
+	 * Set the name of the item
+	 * 
+	 * @param name name of the item
 	 * @return this
 	 */
 	public GuiItemBuilder name(Component name) {
@@ -284,6 +303,18 @@ public class GuiItemBuilder implements Cloneable {
 		 * @return
 		 */
 		boolean onClick(Player player, int slot, ClickType click);
+	}
+
+	/**
+	 * Add an enchantment to the item
+	 * 
+	 * @param enchantment enchantment to add
+	 * @param level       level of the enchantment
+	 * @return this
+	 */
+	public GuiItemBuilder enchantment(Enchantment enchantment, int level) {
+		this.enchantments.put(enchantment, level);
+		return this;
 	}
 
 	/**
