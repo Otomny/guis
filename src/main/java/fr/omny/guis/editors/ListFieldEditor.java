@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 
 import fr.omny.guis.OClass;
 import fr.omny.guis.OField;
@@ -48,22 +49,28 @@ public class ListFieldEditor implements OFieldEditor {
 				Ordering.processOrdering(fieldData.ordering(), list);
 				var guiBuilder = new GuiListBuilder<>(
 						Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())), list)
-								.page(page)
-								.itemCreation(obj -> new GuiItemBuilder().name("§e" + klass.getSimpleName())
-										.icon(fieldData.display()).breakLine()
-										.descriptionLegacy("§7§oValue: §e" + ReflectionUtils.string(obj))
-										.click((p, slot, click) -> {
-											OGui.open(player, obj,
-													() -> {
-														if(obj instanceof Updateable updateable){
-															updateable.update();
-														}
-														edit(page, player, toEdit, field, fieldData, onClose);
-													});
-											return true;
-										}))
-								.pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose))
-								.close(onClose);
+						.page(page)
+						.itemCreation(obj -> new GuiItemBuilder().name("§e" + klass.getSimpleName())
+								.icon(fieldData.display()).breakLine()
+								.descriptionLegacy("§7§oValue: §e" + ReflectionUtils.string(obj))
+								.descriptionLegacy("§eLeft click to edit", "§cRight click to remove")
+								.click((p, slot, click) -> {
+									if (click == ClickType.LEFT) {
+										OGui.open(player, obj,
+												() -> {
+													if (obj instanceof Updateable updateable) {
+														updateable.update();
+													}
+													edit(page, player, toEdit, field, fieldData, onClose);
+												});
+									} else if (click == ClickType.RIGHT) {
+										list.remove(obj);
+										edit(page, player, toEdit, field, fieldData, onClose);
+									}
+									return true;
+								}))
+						.pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose))
+						.close(onClose);
 
 				if (listOperations.contains(ListOperation.ADD)) {
 					guiBuilder.items(GuiListBuilder::isLastPage,

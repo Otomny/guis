@@ -188,7 +188,7 @@ public class OGui {
 			var data = entry.getValue();
 			var editors = findForType(field);
 			Object value = ReflectionUtils.get(this.toEdit, field);
-			String fieldName = Utils.replaceColor(Utils.orString(data.value(), "&e" + field.getName()));
+			String fieldName = Utils.orString(data.value(), "&e" + field.getName());
 			if (editors.isEmpty()) {
 				plugin.getLogger().warning("No editors found for type " + field.getType() + " on field " + field.getName()
 						+ " of class " + this.toEditClass.getSimpleName());
