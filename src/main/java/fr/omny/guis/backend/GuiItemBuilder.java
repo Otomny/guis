@@ -33,6 +33,7 @@ public class GuiItemBuilder implements Cloneable {
 	private Optional<String> playerHeadName = Optional.empty();
 	private Optional<UUID> playerHeadId = Optional.empty();
 	private boolean playerHead = false;
+	private boolean hideTags = true;
 
 	/**
 	 * 
@@ -52,6 +53,17 @@ public class GuiItemBuilder implements Cloneable {
 	 */
 	public GuiItemBuilder icon(Material type) {
 		this.display = new ItemStack(type);
+		return this;
+	}
+
+	/**
+	 * Hide flags
+	 * 
+	 * @param hideFlags hide flags
+	 * @return this
+	 */
+	public GuiItemBuilder hideFlags(boolean hideFlags) {
+		this.hideTags = hideFlags;
 		return this;
 	}
 

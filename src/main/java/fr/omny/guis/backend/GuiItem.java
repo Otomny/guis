@@ -62,10 +62,12 @@ public class GuiItem {
 		ItemMeta itemMeta = this.display.getItemMeta();
 
 		// Hide all attributes
-		itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		itemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-		itemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-		itemMeta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+		if (itemBuilder.isHideTags()) {
+			itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			itemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+			itemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+			itemMeta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+		}
 
 		// Apply display name
 		if (itemBuilder.getDisplayName() != null) {
