@@ -3,14 +3,15 @@
 
 name: Publish
 
+# Trigger the create release workflow
 on:
   push:
-    branches:
-      - "main"
+    tags:
+      - "v*"
 
 jobs:
-  build:
-    name: Compile and Test code
+  release:
+    name: Create Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,9 +22,13 @@ jobs:
           distribution: "temurin"
           cache: "gradle"
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        run: ./gradlew build --no-daemon -x test
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: build-artifacts
-          path: build/libs
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/libs/*.jar
+          asset_name: GUI
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "Release ${{ github.ref }}"
