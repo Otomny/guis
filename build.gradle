@@ -63,7 +63,8 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
 
 java {
-    withSourcesJar()
+	withSourcesJar()
+	withJavadocJar()
 }
 
 shadowJar {
@@ -76,7 +77,7 @@ shadowJar {
 publishing {
     publications {
         maven(MavenPublication) {
-            from(components.java)
+		    from components.java
         }
     }
 }
