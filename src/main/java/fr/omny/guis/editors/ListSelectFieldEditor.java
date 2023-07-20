@@ -13,6 +13,8 @@ import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListBuilder;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ListSelectFieldEditor implements OFieldEditor {
 
@@ -47,7 +49,7 @@ public class ListSelectFieldEditor implements OFieldEditor {
 		@SuppressWarnings("unchecked")
 		List<Object> listValue = (List<Object>) ReflectionUtils.get(toEdit, field);
 		Ordering.processOrdering(fieldData.ordering(), listValue);
-		new GuiListBuilder<>(Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())),
+		new GuiListBuilder<>(Component.text(Utils.orString(fieldData.value(), field.getName()), NamedTextColor.GRAY),
 				provider.provide()).page(page).itemCreation(obj -> {
 					boolean selected = listValue.contains(obj);
 					return new GuiItemBuilder().name((selected ? "§b" : "§e") + provider.asString(obj))

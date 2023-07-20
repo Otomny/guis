@@ -1,6 +1,5 @@
 package fr.omny.guis.editors;
 
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +13,8 @@ import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListBuilder;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class EnumFieldEditor implements OFieldEditor {
 
@@ -38,23 +39,23 @@ public class EnumFieldEditor implements OFieldEditor {
 			List<Object> enumValues = Arrays.asList(field.getType().getEnumConstants());
 			Object selectedValue = ReflectionUtils.get(toEdit, field);
 			var guiBuilder = new GuiListBuilder<>(
-					Utils.replaceColor(Utils.orString(fieldData.value(), "&7" + field.getName())), enumValues)
-							.page(page).itemCreation(obj -> {
-								boolean select = selectedValue == obj;
-								return new GuiItemBuilder().icon(select ? Material.DIAMOND : Material.NAME_TAG)
-										.name((select ? "§b" : "§7") + obj.toString()).breakLine()
-										.click((p, slot, click) -> {
-											// select this
-											try {
-												ReflectionUtils.set(toEdit, field, obj);
-												edit(page, player, toEdit, field, fieldData, onClose);
-											} catch (Exception e) {
-												e.printStackTrace();
-											}
-											return true;
-										});
-							}).pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose))
-							.close(onClose);
+					Component.text(Utils.orString(fieldData.value(), field.getName()), NamedTextColor.GRAY), enumValues)
+					.page(page).itemCreation(obj -> {
+						boolean select = selectedValue == obj;
+						return new GuiItemBuilder().icon(select ? Material.DIAMOND : Material.NAME_TAG)
+								.name((select ? "§b" : "§7") + obj.toString()).breakLine()
+								.click((p, slot, click) -> {
+									// select this
+									try {
+										ReflectionUtils.set(toEdit, field, obj);
+										edit(page, player, toEdit, field, fieldData, onClose);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+									return true;
+								});
+					}).pageChange(newPage -> edit(newPage, player, toEdit, field, fieldData, onClose))
+					.close(onClose);
 
 			guiBuilder.open(player);
 		} catch (Exception e) {

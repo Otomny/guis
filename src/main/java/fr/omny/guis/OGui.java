@@ -42,6 +42,8 @@ import fr.omny.guis.editors.stringifiers.Stringifier;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 /**
  *
@@ -188,7 +190,7 @@ public class OGui {
 			var data = entry.getValue();
 			var editors = findForType(field);
 			Object value = ReflectionUtils.get(this.toEdit, field);
-			String fieldName = Utils.orString(data.value(), "&e" + field.getName());
+			Component fieldName = Component.text(Utils.orString(data.value(), field.getName()), NamedTextColor.YELLOW);
 			if (editors.isEmpty()) {
 				plugin.getLogger().warning("No editors found for type " + field.getType() + " on field " + field.getName()
 						+ " of class " + this.toEditClass.getSimpleName());
@@ -217,7 +219,8 @@ public class OGui {
 		for (var entry : findMethods(this.toEditClass).entrySet()) {
 			var method = entry.getKey();
 			var data = entry.getValue();
-			String methodName = Utils.replaceColor(Utils.orString(data.value(), "&e" + method.getName()));
+			// String methodName = Utils.replaceColor(Utils.orString(data.value(), "&e" + method.getName()));
+			Component methodName = Component.text(Utils.orString(data.value(), method.getName()+"()"), NamedTextColor.GOLD);
 			guiBuilder.item(new GuiItemBuilder().name(methodName).icon(data.icon()).breakLine()
 					.descriptionLegacy(data.description()).click(() -> {
 						method.setAccessible(true);

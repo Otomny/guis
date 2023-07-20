@@ -20,6 +20,8 @@ import fr.omny.guis.editors.providers.WorldListProvider;
 import fr.omny.guis.editors.providers.WorldNameListProvider;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ObjectInListFieldEditor implements OFieldEditor {
 
@@ -89,7 +91,7 @@ public class ObjectInListFieldEditor implements OFieldEditor {
 		@SuppressWarnings("unchecked")
 		ObjectInListProvider<Object> provider = (ObjectInListProvider<Object>) optionalProvider.get();
 		Object selectedValue = ReflectionUtils.get(toEdit, field);
-		new GuiListBuilder<>(Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())),
+		new GuiListBuilder<>(Component.text(Utils.orString(fieldData.value(), field.getName()), NamedTextColor.GRAY),
 				provider.provide()).page(page)
 				.itemCreation(obj -> {
 					boolean selected = selectedValue == obj;

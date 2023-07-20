@@ -20,6 +20,8 @@ import fr.omny.guis.backend.GuiItemBuilder;
 import fr.omny.guis.backend.GuiListBuilder;
 import fr.omny.guis.utils.ReflectionUtils;
 import fr.omny.guis.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ListFieldEditor implements OFieldEditor {
 
@@ -48,7 +50,7 @@ public class ListFieldEditor implements OFieldEditor {
 				List<Object> list = (List<Object>) field.get(toEdit);
 				Ordering.processOrdering(fieldData.ordering(), list);
 				var guiBuilder = new GuiListBuilder<>(
-						Utils.replaceColor(Utils.orString(fieldData.value(), "&e" + field.getName())), list)
+						Component.text(Utils.orString(fieldData.value(), field.getName()), NamedTextColor.GRAY), list)
 						.page(page)
 						.itemCreation(obj -> new GuiItemBuilder().name("§e" + klass.getSimpleName())
 								.icon(fieldData.display()).breakLine()
