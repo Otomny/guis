@@ -2,10 +2,6 @@ package fr.omny.guis.utils;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.bukkit.ChatColor;
 
 import net.kyori.adventure.text.Component;
 
@@ -47,7 +43,7 @@ public class Utils {
 
 	/**
 	 * 
-	 *  
+	 * 
 	 * @param value        The value
 	 * @param defaultValue The default value
 	 * @return The value if not empty, else the default value
@@ -62,23 +58,6 @@ public class Utils {
 	 */
 	public static double round(double val) {
 		return Math.round(val * 1000) / 1000;
-	}
-
-	/**
-	 * @param text
-	 * @return
-	 */
-	@Deprecated
-	public static String replaceColor(String text) {
-		return ChatColor.translateAlternateColorCodes('&', text);
-	}
-
-	/**
-	 * @param texts
-	 * @return
-	 */
-	public static List<String> replaceColor(List<String> texts) {
-		return texts.stream().map(Utils::replaceColor).collect(Collectors.toList());
 	}
 
 	public record Tuple2<U, V>(U key, V value) {
