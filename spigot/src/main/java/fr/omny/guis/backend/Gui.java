@@ -1,19 +1,24 @@
 package fr.omny.guis.backend;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import fr.omny.guis.backend.GuiItemBuilder.OnClickHandler;
 import fr.omny.guis.backend.head.GuiHeadFetcher;
 import fr.omny.guis.backend.head.HeadFetcher;
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
@@ -22,12 +27,14 @@ public class Gui implements InventoryHolder, GuiHeadFetcher {
 
 	private Inventory inventory;
 	private Component name;
-	private SortedMap<Integer, GuiItem> items = new TreeMap<>();
+	private Int2ObjectSortedMap<GuiItem> items = new Int2ObjectRBTreeMap<>();
 	private Optional<GuiBuilder.InventoryHandler> handler;
 	private ItemStack fillSideItem;
 	private boolean fillSide;
 	private int size;
 	private Player player;
+	@Getter
+	private List<OnClickHandler> closesTasks = new ArrayList<>();
 
 	public Gui(GuiBuilder guiBuilder) {
 		this.handler = Optional.ofNullable(guiBuilder.getHandler());
@@ -51,21 +58,34 @@ public class Gui implements InventoryHolder, GuiHeadFetcher {
 		this.open();
 	}
 
+	public void processClose(InventoryCloseEvent event) {
+		Player player = (Player) event.getPlayer();
+		this.handler.ifPresent(
+				l -> l.onClose(this, player, event));
+		this.closesTasks.forEach(task -> task.onClick(player, 0, ClickType.UNKNOWN));
+	}
+
 	private void init() {
 		this.inventory = Bukkit.createInventory(null, fixSize(this.size), this.name);
 		if (this.fillSide) {
 			fillOnSide();
 		}
 		// Fill the inventory and return
-		for (Map.Entry<Integer, GuiItem> en : this.items.entrySet()) {
-			if (en.getKey() < Math.min(54, this.inventory.getSize())) {
-				inventory.setItem(en.getKey(), en.getValue().getDisplay());
-				// // Get player head in async
-				if (en.getValue().isPlayerHead()) {
-					HeadFetcher.getHead(en.getValue(), this);
+		this.items.forEach((slot, item) -> {
+			if (slot < Math.min(54, this.inventory.getSize())) {
+				this.inventory.setItem(slot, item.getDisplay());
+				// Get player head in async
+				if (item.isPlayerHead()) {
+					HeadFetcher.getHead(item, this);
 				}
 			}
-		}
+		});
+
+		this.items.forEach((s, item) -> {
+			if (item.isCloseOnClick()) {
+				item.getHandler().ifPresent(this.closesTasks::add);
+			}
+		});
 	}
 
 	public void open(Player player) {
@@ -119,7 +139,7 @@ public class Gui implements InventoryHolder, GuiHeadFetcher {
 		// Find panel item index in items and replace it once more
 		// in inventory to
 		// update it.
-		this.items.entrySet().stream()
+		this.items.int2ObjectEntrySet().stream()
 				.filter(entry -> entry.getValue() == item)
 				.mapToInt(Map.Entry::getKey).findFirst()
 				.ifPresent(index ->
