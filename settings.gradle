@@ -3,3 +3,7 @@
  */
 
 rootProject.name = 'guis'
+include(':api')
+include(':spigot')
+project(":api").projectDir = file('api')
+project(":spigot").projectDir = file('spigot')
