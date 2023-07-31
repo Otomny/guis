@@ -1,14 +1,13 @@
 package fr.omny.guis.backend;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
@@ -20,7 +19,7 @@ public class GuiBuilder {
 	private int rows = 3;
 	private boolean fillSide = false;
 	private ItemStack fillSideItem = new ItemStack(Material.STONE);
-	private SortedMap<Integer, GuiItem> items = new TreeMap<>();
+	private Int2ObjectSortedMap<GuiItem> items = new Int2ObjectRBTreeMap<>();
 	private Component title;
 	private InventoryHandler handler;
 
@@ -80,9 +79,10 @@ public class GuiBuilder {
 	 * 
 	 * @param material The material to be used as a filler
 	 * @return The current instance of the builder
-	 * @throws IllegalArgumentException If the material is null OR the string is not a valid material
+	 * @throws IllegalArgumentException If the material is null OR the string is not
+	 *                                  a valid material
 	 */
-	public GuiBuilder fillSide(String material) throws IllegalArgumentException{
+	public GuiBuilder fillSide(String material) throws IllegalArgumentException {
 		if (material == null) {
 			throw new IllegalArgumentException("Material cannot be null");
 		}
@@ -101,12 +101,12 @@ public class GuiBuilder {
 
 	public int nextSlot() {
 		if (!this.fillSide) {
-			return this.items.isEmpty() ? 0 : this.items.lastKey() + 1;
+			return this.items.isEmpty() ? 0 : this.items.lastIntKey() + 1;
 		}
 		if (this.items.isEmpty()) {
 			return 10;
 		}
-		int nextSlot = this.items.lastKey() + 1;
+		int nextSlot = this.items.lastIntKey() + 1;
 		if (nextSlot % 9 == 0) {
 			nextSlot += 1;
 		}

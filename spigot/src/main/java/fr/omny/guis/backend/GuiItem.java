@@ -39,10 +39,13 @@ public class GuiItem {
 	 * @return
 	 */
 	public static GuiItem back(Component text, Optional<Runnable> click) {
-		return new GuiItemBuilder().name(text).icon(Material.ARROW).click(click)
+		var item = new GuiItemBuilder().name(text).icon(Material.ARROW).click(click)
 				.build();
+		item.setCloseOnClick(true);
+		return item;
 	}
 
+	private boolean closeOnClick = true;
 	private ItemStack display;
 	private Optional<GuiItemBuilder.OnClickHandler> handler = Optional.empty();
 	private boolean playerHead;
@@ -98,6 +101,10 @@ public class GuiItem {
 			metaConsumer.accept(meta);
 			this.display.setItemMeta(meta);
 		}
+	}
+
+	public void setCloseOnClick(boolean closeOnClick) {
+		this.closeOnClick = closeOnClick;
 	}
 
 	public void setHead(ItemStack itemStack) {
